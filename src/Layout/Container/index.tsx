@@ -1,51 +1,58 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { validateAuthentication } from '@/utils/helpers';
 
 import { ContainerContextProvider } from './context';
+// Import SidebarLayout
+import SidebarLayout from './SidebarLayout';
 
-const Header = dynamic(() => import('./Components/Header'), {
-  loading: () => <div></div>,
-  ssr: false,
-});
 const Footer = dynamic(() => import('./Components/Footer'), {
-  loading: () => <div></div>,
+  loading: () => <div>Loading...</div>,
   ssr: false,
 });
 
 type Props = {
-  header?: boolean | false;
+  header?: boolean;
   children: JSX.Element | string | JSX.Element[];
-  footer?: boolean | false;
+  footer?: boolean;
   role?: string;
 };
-function Container({ children, header }: Props) {
-  const [hydrated, setHydrated] = React.useState(false);
-  React.useEffect(() => {
+
+const Container: React.FC<Props> = ({ children, header }) => {
+  const [hydrated, setHydrated] = useState<boolean>(false);
+
+  useEffect(() => {
     setHydrated(true);
   }, []);
-  if (!hydrated) return null;
-  return (
-    <>
-      {validateAuthentication() && (
-        <div>
-          {!header && <Header />}
-          <div className="viewPort">{children}</div>
-          <Footer />
-        </div>
-      )}
-    </>
-  );
-}
 
-const IndexContainer = ({ children, header }: Props) => {
+  // Do not render anything until hydration is complete
+  if (!hydrated) return null;
+
+  // Validate authentication before rendering layout
+  if (!validateAuthentication()) {
+    return <div>You need to log in to access this page.</div>;
+  }
+
+  return (
+    <SidebarLayout>
+      {/* Render children inside SidebarLayout */}
+      <div className="flex-1">
+        <div className="viewPort">{children}</div>
+        <Footer />
+      </div>
+    </SidebarLayout>
+  );
+};
+
+const IndexContainer: React.FC<Props> = ({ children, header }) => {
   return (
     <ContainerContextProvider>
-      <Container {...{ header }}>{children}</Container>
+      <Container header={header}>{children}</Container>
     </ContainerContextProvider>
   );
 };
+
 export default IndexContainer;

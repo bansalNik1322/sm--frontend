@@ -12,6 +12,7 @@ export interface DATATABLE_COLUMN {
   hidden?: boolean;
   value?: string;
   search?: boolean;
+  type?: string;
 }
 export interface DATATABLE_ROWS {
   [field: string]: JSX.Element | JSX.Element[] | string | number | boolean;

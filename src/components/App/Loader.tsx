@@ -4,16 +4,13 @@ import React, { useEffect, useState } from 'react';
 import Spinner from 'react-bootstrap/Spinner';
 import { Bars, ThreeDots } from 'react-loader-spinner';
 
-interface PROPS {
-  color?: string;
-}
 function ButtonLoader() {
   return (
     <div className="d-flex justify-content-center">
       <ThreeDots
         height="30"
         width="30"
-        color={'var(--sp-primary)' || '#FFFFFF'}
+        color="#FFFFFF"
         ariaLabel="three-circles-rotating"
         wrapperStyle={{}}
         wrapperClass=""
@@ -29,7 +26,7 @@ export function BarLoader() {
       <Bars
         height="30"
         width="30"
-        color={'var(--sp-primary)' || '#FFFFFF'}
+        color="var(--sp-primary)"
         ariaLabel="three-circles-rotating"
         wrapperStyle={{}}
         wrapperClass=""
@@ -45,7 +42,7 @@ export function SuspenseLoader() {
       <ThreeDots
         height="30"
         width="50"
-        color={'var(--sp-primary)' || '#FFFFFF'}
+        color="var(--sp-primary)"
         ariaLabel="three-circles-rotating"
         wrapperStyle={{}}
         wrapperClass=""
@@ -65,7 +62,7 @@ export const useLoading = () => {
 export function Loading() {
   // const router = useRouter();
   // const asPath = usePathname();
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   useEffect(() => {
     // const handleStart = (url: string) => url !== asPath && setLoading(true);
     // const handleComplete = (url: string) => url === asPath && setLoading(false);

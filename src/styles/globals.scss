@@ -1,24 +1,24 @@
-@import '~bootstrap/scss/bootstrap';
-@import './variables.scss';
-@import './mixins.scss';
+@import "~bootstrap/scss/bootstrap";
+@import "./variables.scss";
+@import "./mixins.scss";
 
 // @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&display=swap');
 
 @font-face {
-  font-family: 'Inter';
-  src: url('./webfonts/Inter/Inter-Regular.ttf') format('truetype');
+  font-family: "Inter";
+  src: url("./webfonts/Inter/Inter-Regular.ttf") format("truetype");
   /* Add other font properties if needed */
 }
 
 @font-face {
-  font-family: 'Roboto';
-  src: url('./webfonts/Roboto/Roboto-Regular.ttf') format('truetype');
+  font-family: "Roboto";
+  src: url("./webfonts/Roboto/Roboto-Regular.ttf") format("truetype");
   /* Add other font properties if needed */
 }
 
 @font-face {
-  font-family: 'Poppins';
-  src: url('./webfonts/Poppins/Poppins-Regular.ttf') format('truetype');
+  font-family: "Poppins";
+  src: url("./webfonts/Poppins/Poppins-Regular.ttf") format("truetype");
   /* Add other font properties if needed */
 }
 
@@ -69,33 +69,42 @@ body {
   --bs-gutter-x: 3.8rem !important;
 }
 
+.forgotpage .login-container {
+  width: 30% !important;
+}
+
 .loginpage {
-  overflow-y: hidden;
+  overflow: hidden;
   min-height: 100vh;
   background-color: $loginBackground;
+  
+  .forgot-container {
+    width: 30% !important;
+  }
 
   .login-container {
     background-color: #0b1739;
-    width: 28%;
+    width: 40%;
     margin: 100px auto;
     color: white;
     padding: 20px;
     border-radius: 10px;
     text-align: center;
-
+    
     h2 {
       margin-bottom: 20px;
     }
-
+    
     .social-media-login {
       display: flex;
       gap: 20px;
       justify-content: space-between;
       margin: 20px 0;
-
+      
       .social-media-button {
         background-color: #0a1330;
         color: white;
+        min-width: 230px;
         cursor: pointer;
         border: none;
         border-radius: 3px;
@@ -141,7 +150,7 @@ body {
       margin-bottom: 30px;
 
       a {
-        color: #bf2fcc;
+        color: #bf2fcc !important;
       }
     }
 
@@ -157,7 +166,7 @@ body {
 
       &::before,
       &::after {
-        content: '';
+        content: "";
         flex: 1;
         border-top: 1px solid #3a3b5a;
       }
@@ -500,7 +509,7 @@ input:-webkit-autofill:active {
     border-color: $primary;
   }
 
-  &:checked[type='checkbox'] {
+  &:checked[type="checkbox"] {
     background-image: url(/assets/images/check.svg);
   }
 }
@@ -684,7 +693,7 @@ input:-webkit-autofill:active {
       background-image: url(/assets/images/GreeDownArrow.svg);
       background-repeat: no-repeat;
       background-position: 0px -7px;
-      content: '';
+      content: "";
       width: 18px;
       height: 7px;
       top: 3px;
@@ -939,7 +948,7 @@ input:-webkit-autofill:active {
     position: absolute;
     width: 3px;
     background-color: $primary;
-    content: '';
+    content: "";
     height: 100%;
     left: 0px;
     top: 0px;
@@ -1133,7 +1142,7 @@ input:-webkit-autofill:active {
             position: absolute;
             width: 3px;
             background-color: $primary;
-            content: '';
+            content: "";
             height: 100%;
             left: 0px;
             top: 0px;
@@ -1290,7 +1299,7 @@ input:-webkit-autofill:active {
       width: 60px;
       flex: 0 0 60px;
       margin-left: 10px;
-      .form-check-input:checked[type='checkbox'] {
+      .form-check-input:checked[type="checkbox"] {
         background-image: url(/assets/images/whiteCircle.svg);
       }
       .form-check-input:checked {

@@ -5,11 +5,22 @@ import Cookies from 'js-cookie';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Button, Col, Form, InputGroup, Row } from 'react-bootstrap';
+import { Col, Form, InputGroup, Row } from 'react-bootstrap';
 import * as Yup from 'yup';
 
 import { useLoading, useRequest } from '@/components/App';
 import { SuspenseLoader } from '@/components/App/Loader';
+import {
+  AuthContainer,
+  AuthPage,
+  Divider,
+  ForgotLink,
+  InputField,
+  NoAccount,
+  SocialMediaButton,
+  SocialMediaLogin,
+  SubmitButton,
+} from '@/styles/Auth/auth.style';
 import { KEYPAIR, REQUEST } from '@/types/interfaces';
 import { validateAuthentication } from '@/utils/helpers';
 
@@ -20,7 +31,7 @@ const initialValues = {
 };
 
 const LoginSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email').required('Required'),
+  email: Yup.string().required('Required'),
   password: Yup.string().min(6, 'Too Short!').max(100, 'Too Long!').required('Required'),
 });
 
@@ -54,16 +65,12 @@ function Index() {
   }
 
   return (
-    <div className="loginpage">
-      {/* <div className="logo">
-              {getGlobalSettings()?.logo ? (
-                <Image height={41} width={10} alt="logo" src={getGlobalSettings()?.logo} />
-              ) : null}
-            </div> */}
-      <div className="login-container">
+    <AuthPage>
+      <AuthContainer>
         <h2>LogIn</h2>
-        <div className="social-media-login">
-          <button className="social-media-button">
+
+        <SocialMediaLogin>
+          <SocialMediaButton>
             <span className="MuiButton-icon MuiButton-startIcon MuiButton-iconSizeMedium css-1l6c7y9">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -91,16 +98,17 @@ function Index() {
                   d="M130.55 50.479c24.514 0 41.05 10.589 50.479 19.438l36.844-35.974C195.245 12.91 165.798 0 130.55 0C79.49 0 35.393 29.301 13.925 71.947l42.211 32.783c10.59-31.477 39.891-54.251 74.414-54.251"
                 ></path>
               </svg>
-            </span>{' '}
+            </span>
             &nbsp;Login With Google
-          </button>
-          <button className="social-media-button">
+          </SocialMediaButton>
+          <SocialMediaButton>
             <i className="fab fa-apple"></i> &nbsp; Login With Apple
-          </button>
-        </div>
-        <div className="divider">
+          </SocialMediaButton>
+        </SocialMediaLogin>
+
+        <Divider>
           <span>or Login with</span>
-        </div>
+        </Divider>
 
         <Formik
           initialValues={initialValues}
@@ -109,17 +117,18 @@ function Index() {
           validationSchema={LoginSchema}
           onSubmit={handleSubmit}
         >
-          {({ handleSubmit, handleChange, errors, touched }) => (
+          {({ handleSubmit, handleChange, errors, touched, values }) => (
             <Form noValidate onSubmit={handleSubmit}>
               <Row>
                 <Col md={12}>
                   <Form.Group className="mb-3">
-                    <Form.Control
+                    <InputField
                       type="email"
                       name="email"
-                      placeholder="Enter email"
+                      placeholder="Your email or username"
                       onChange={handleChange}
                       isInvalid={!!errors.email}
+                      value={values.email}
                     />
                     {errors.email && touched.email ? (
                       <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
@@ -129,7 +138,7 @@ function Index() {
                 <Col md={12}>
                   <Form.Group className="mb-3">
                     <InputGroup className="mb-3">
-                      <Form.Control
+                      <InputField
                         type={viewPassword ? 'text' : 'password'}
                         name="password"
                         placeholder="Enter password"
@@ -145,25 +154,22 @@ function Index() {
                       <Form.Check type="checkbox" name="rememberme" label="Remember me" onChange={handleChange} />
                     </Form.Group>
                   </div>
-                  <div className="forgot">
+                  <ForgotLink>
                     <Link href="/forgot-password">Forgot password</Link>
-                  </div>
+                  </ForgotLink>
                 </div>
 
-                <Button type="submit" className="customBtn">
-                  {loading?.LoginUser_LOADING ? ButtonLoader() : 'Sign In'}
-                </Button>
+                <SubmitButton type="submit">{loading?.LoginUser_LOADING ? ButtonLoader() : 'Submit'}</SubmitButton>
               </Row>
             </Form>
           )}
         </Formik>
-        <div className="no-account">
-          <p>
-            Don't have an Account? <a href="">Signup</a>
-          </p>
-        </div>
-      </div>
-    </div>
+
+        <NoAccount>
+          Don't have an Account? <Link href="/register">Signup</Link>
+        </NoAccount>
+      </AuthContainer>
+    </AuthPage>
   );
 }
 

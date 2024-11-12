@@ -1,3 +1,5 @@
+import { Card, TableCell, TableHead, TableRow } from '@mui/material';
+import { TableBody } from '@nextui-org/react';
 import Image from 'next/image';
 import React, { memo, useCallback, useEffect, useReducer } from 'react';
 import { Form, Table } from 'react-bootstrap';
@@ -10,7 +12,7 @@ import { initialState, reducer } from './reducer';
 
 const Pagination = React.lazy(() => import('./Components/Pagination'));
 
-interface column {
+export interface column {
   dataField: string;
   text: string | JSX.Element;
   hidden?: boolean;
@@ -213,62 +215,47 @@ function Index(props: Props) {
   }, [loading?.[`${props?.api?.url}_LOADING`]]);
 
   return (
-    <div className="WhtBox mt10">
-      <div className="TableTop">
-        <div className="searchArea">
-          <div className="searchInput">
-            <Image alt="search" height={16} width={16} src="/assets/images/search.svg" />{' '}
-            <Form.Control type="text" onChange={searchDatatable} placeholder="Search" />
-          </div>
-        </div>
-        <div className="TopAction">{props?.dataShowModal && props?.dataShowModal}</div>
-      </div>
-      <div className="table-responsive dataTable">
-        <Table responsive hover>
-          <thead>
-            <tr>
-              {columns.map((col, i) => (
-                <th style={{ display: col.hidden ? 'none' : '' }} key={i}>
-                  {col.text}
-                  {typeof col.text === 'string' &&
-                    col.dataField !== 'action' &&
-                    (col?.sort === undefined || col?.sort === true) && (
-                      <span role="button" onClick={() => sortBy(col.dataField)} style={{ marginLeft: '2px' }}>
-                        <i
-                          className={`fa fa-arrow-${state.sortBy === col.dataField + '_desc' ? 'down' : 'up'}`}
-                          style={{ color: state.sortBy.includes(col.dataField) ? '#3299cc' : '#a6b1c2' }}
-                        ></i>
-                      </span>
-                    )}
-                </th>
+    <Card style={{ marginTop: '50px' }}>
+      <TableHead>
+        <TableRow>
+          {columns.map((col: column, i: number) => (
+            <TableCell key={i}>{col.text}</TableCell>
+          ))}
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {data?.length ? (
+          data?.map((row: data, i: number) => (
+            <tr key={i}>
+              {columns.map(col => (
+                <TableRow hover key={i}>
+                  {row[col.dataField]}
+                </TableRow>
               ))}
             </tr>
-          </thead>
-          <tbody>
-            {data?.length && !loading?.[`${props?.api?.url}_LOADING`] ? (
-              filterDatatable().map((row: data, i: number) => (
-                <tr key={i}>
-                  {columns.map((col, j) => (
-                    <td
-                      data-label={typeof col.text === 'string' ? col.text : ''}
-                      style={{ display: col.hidden ? 'none' : '' }}
-                      key={i + '_' + j}
-                    >
-                      {row[col.dataField]}
-                    </td>
-                  ))}
-                </tr>
-              ))
-            ) : (
-              <NoDataIndication />
-            )}
-          </tbody>
-        </Table>
+          ))
+        ) : (
+          <NoDataIndication />
+        )}
+      </TableBody>
+      <div className="WhtBox mt10">
+        <div className="TableTop">
+          {/* <div className="searchArea">
+            <div className="searchInput">
+              <Image alt="search" height={16} width={16} src="/assets/images/search.svg" />{' '}
+              <Form.Control type="text" onChange={searchDatatable} placeholder="Search" />
+            </div>
+          </div> */}
+          {/* <div className="TopAction">{props?.dataShowModal && props?.dataShowModal}</div> */}
+        </div>
+        <div className="table-responsive dataTable">
+          <Table responsive hover></Table>
+        </div>
+        {(props?.pagination === undefined || props?.pagination) && (
+          <Pagination records={data} state={state} dispatch={dispatch} onPageChange={filterDatatable} />
+        )}
       </div>
-      {(props?.pagination === undefined || props?.pagination) && (
-        <Pagination records={data} state={state} dispatch={dispatch} onPageChange={filterDatatable} />
-      )}
-    </div>
+    </Card>
   );
 }
 

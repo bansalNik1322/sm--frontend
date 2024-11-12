@@ -1,6 +1,5 @@
 'use client';
 import { Formik } from 'formik';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -8,6 +7,7 @@ import { Button, Col, Form, InputGroup, Row } from 'react-bootstrap';
 import * as Yup from 'yup';
 
 import { useLoading, useRequest, useSettings } from '@/components/App';
+import { AuthContainer, AuthPage, InputField, NoAccount, SubmitButton } from '@/styles/Auth/auth.style';
 import { REQUEST } from '@/types/interfaces';
 import { toastr } from '@/utils/helpers';
 
@@ -33,29 +33,27 @@ function Index() {
   const router = useRouter();
   const settings = useSettings();
   const searchParams = useSearchParams();
-  const [viewPassword, setviewPassword] = useState(false);
-  const [viewConfirmPassword, setviewConfirmPassword] = useState(false);
+  const [viewPasswords, setViewPasswords] = useState({
+    password: false,
+    confirmPassword: false,
+  });
   const { request, loading } = useRequest();
   const { ButtonLoader } = useLoading();
   const token = searchParams.get('token');
 
-  useEffect(() => {
-    if (!token) {
-      router.push('/login');
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!token) {
+  //     router.push('/login');
+  //   }
+  // });
 
   return (
-    <div className={`loginarea whiteBox`}>
-      <div className="loginForm">
-        <div className="logo text-center">
-          {settings?.logo ? <Image alt="logo" height={41} width={132} src="/assets/images/logo.png" /> : null}
-        </div>
+    <AuthPage>
+      <AuthContainer>
         <div className="text-center">
-          <h2>
-            Create new password <span>Please set your new password</span>
-          </h2>
+          <h2>Set your new password</h2>
         </div>
+
         <Formik
           enableReinitialize={true}
           initialValues={{
@@ -82,32 +80,29 @@ function Index() {
                 <Col md={12}>
                   <Form.Group className="mb-3" controlId="formBasicEmail">
                     <InputGroup className="mb-3">
-                      <Form.Control
-                        type={viewPassword ? 'text' : 'password'}
+                      <InputField
+                        type={viewPasswords?.password ? 'text' : 'password'}
                         name="password"
                         placeholder="Password"
                         onChange={handleChange}
                         value={values.password}
                         isInvalid={!!errors.password}
                       />
-                      <InputGroup.Text onClick={() => setviewPassword(!viewPassword)} role="button">
-                        <i className={`fa fa-eye ${viewPassword ? 'text-success' : ''}`}></i>
-                      </InputGroup.Text>
-                      <Form.Text>
-                        The password should contain at least 6 characters and include at least one uppercase letter, one
-                        lowercase letter, and one number
-                      </Form.Text>
-                      {errors.password ? (
+                      {errors.password && (
                         <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
-                      ) : null}
+                      )}
                     </InputGroup>
+                    <Form.Text style={{ color: 'white' }}>
+                      The password should contain at least 6 characters and include at least one uppercase letter, one
+                      lowercase letter, and one number
+                    </Form.Text>
                   </Form.Group>
                 </Col>
                 <Col md={12}>
                   <Form.Group className="mb-3" controlId="formBasicEmail">
                     <InputGroup className="mb-3">
-                      <Form.Control
-                        type={viewConfirmPassword ? 'text' : 'password'}
+                      <InputField
+                        type={viewPasswords?.confirmPassword ? 'text' : 'password'}
                         name="confirmPassword"
                         placeholder="Confirm Password"
                         onChange={handleChange}
@@ -115,35 +110,29 @@ function Index() {
                         isInvalid={!!errors.confirmPassword}
                       />
 
-                      <InputGroup.Text onClick={() => setviewConfirmPassword(!viewConfirmPassword)} role="button">
-                        <i className={`fa fa-eye ${viewConfirmPassword ? 'text-success' : ''}`}></i>
-                      </InputGroup.Text>
-
-                      {errors.confirmPassword ? (
+                      {errors.confirmPassword && (
                         <Form.Control.Feedback type="invalid">{errors.confirmPassword}</Form.Control.Feedback>
-                      ) : null}
+                      )}
                     </InputGroup>
                   </Form.Group>
                 </Col>
                 <Col md={12}>
-                  <Button type="submit" className="loginBtn customBtn mt20 fullBtn fs14">
-                    {loading?.resetPassword_LOADING ? ButtonLoader() : 'Update password'}
-                  </Button>
+                  <SubmitButton type="submit">
+                    {loading?.resetPassword_LOADING ? ButtonLoader() : 'Submit'}
+                  </SubmitButton>
                 </Col>
-                <Col>
-                  <div className="createAccount text-center">
-                    Cancel and Return to{' '}
-                    <Link href="/login" className="fogotPass text-primary">
-                      Login
-                    </Link>
-                  </div>
-                </Col>
+                <Col></Col>
               </Row>
             </Form>
           )}
         </Formik>
-      </div>
-    </div>
+
+        <NoAccount>
+          Cancel and Return to
+          <Link href="/login"> Login</Link>
+        </NoAccount>
+      </AuthContainer>
+    </AuthPage>
   );
 }
 

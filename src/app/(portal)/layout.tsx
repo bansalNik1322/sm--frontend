@@ -1,9 +1,9 @@
-// Components
 import { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import React from 'react';
 
 import { SuspenseLoader } from '@/components/App/Loader';
+import AppThemeProvider from '@/theme/ThemeProvider';
 
 export const metadata: Metadata = {
   title: 'Settings',
@@ -17,9 +17,11 @@ const Container = dynamic(() => import('@/Layout/Container'), {
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <Container>
-      <>{children}</>
-    </Container>
+    <AppThemeProvider>
+      <Container>
+        <>{children}</>
+      </Container>
+    </AppThemeProvider>
   );
 };
 

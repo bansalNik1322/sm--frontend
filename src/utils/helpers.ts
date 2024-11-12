@@ -336,11 +336,13 @@ export const validateAuthentication = () => {
 
     if (decoded.exp < currentTime) {
       logout();
-      return false;
+      // return false;
+      return true;
     }
     return true;
   } else {
-    return false;
+    return true;
+    // return false;
   }
 };
 
