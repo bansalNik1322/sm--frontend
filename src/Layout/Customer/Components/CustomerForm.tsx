@@ -70,8 +70,8 @@ function CustomerForm(props: PROPS) {
           status: (state?.customerDetail?.status
             ? 'Active'
             : state?.customerDetail?.status === false
-            ? 'Inactive'
-            : 'Active') as string,
+              ? 'Inactive'
+              : 'Active') as string,
         }}
         validateOnChange={false}
         validateOnBlur={false}

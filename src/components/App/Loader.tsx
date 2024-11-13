@@ -26,7 +26,7 @@ export function BarLoader() {
       <Bars
         height="30"
         width="30"
-        color="var(--sp-primary)"
+        color="white"
         ariaLabel="three-circles-rotating"
         wrapperStyle={{}}
         wrapperClass=""

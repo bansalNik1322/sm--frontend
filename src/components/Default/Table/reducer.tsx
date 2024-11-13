@@ -1,4 +1,4 @@
-interface data {
+export interface data {
   [field: string]: JSX.Element | JSX.Element[] | string | number | boolean;
 }
 interface InitalState {

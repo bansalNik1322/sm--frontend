@@ -2,11 +2,13 @@ import { ACTION, API_ERROR } from '@/types/interfaces';
 import { api } from '@/utils/axiosInterceptor';
 import { handleErrors } from '@/utils/helpers';
 
-const getSecurityQuestions = async (action: ACTION) => {
+const getSecurityQuestionList = async (action: ACTION) => {
   try {
     const { payload } = action;
-    const response: ReturnType<any> = api(`/api/admin/security-question`, 'GET', { data: payload });
-    return response;
+    console.log('🚀 ~ getSecurityQuestionList ~ payload:', payload);
+    const response: ReturnType<any> = await api(`/api/admin/security-question`, 'GET', { data: payload });
+    console.log('🚀 ~ getSecurityQuestionList ~ response:', response);
+    return response.data;
   } catch (error) {
     return handleErrors(error as API_ERROR);
   }
@@ -59,8 +61,8 @@ const deleteSecurityQuestion = async (action: ACTION) => {
 };
 
 export {
-  getSecurityQuestions,
   updateSecurityQuestion,
+  getSecurityQuestionList,
   createSecurityQuestion,
   deleteSecurityQuestion,
   getSecurityQuestion,

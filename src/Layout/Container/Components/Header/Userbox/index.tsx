@@ -43,7 +43,7 @@ const UserBoxText = styled(Box)(
 
 const UserBoxLabel = styled(Typography)(
   ({ theme }) => `
-        font-weight: ${theme.typography.fontWeightBold};
+        font-weight: ${theme.typography.fontWeightLight};
         color: ${theme.palette.secondary.main};
         display: block;
 `,

@@ -9,7 +9,7 @@ const LogoWrapper = styled(Link)(
         text-decoration: none;
         width: 53px;
         margin: 0 auto;
-        font-weight: ${theme.typography.fontWeightBold};
+        font-weight: ${theme.typography.fontWeightRegular};
 `,
 );
 
@@ -77,7 +77,7 @@ const TooltipWrapper = styled(({ className, ...props }: TooltipProps) => (
     backgroundColor: theme.colors.alpha.trueWhite[100],
     color: theme.palette.getContrastText(theme.colors.alpha.trueWhite[100]),
     fontSize: theme.typography.pxToRem(12),
-    fontWeight: 'bold',
+    fontWeight: 'regular',
     borderRadius: theme.general.borderRadiusSm,
     boxShadow: '0 .2rem .8rem rgba(7,9,25,.18), 0 .08rem .15rem rgba(7,9,25,.15)',
   },

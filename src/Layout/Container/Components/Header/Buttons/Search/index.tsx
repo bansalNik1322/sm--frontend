@@ -130,7 +130,7 @@ function HeaderSearch() {
             <Box sx={{ pt: 0, pb: 1 }} display="flex" justifyContent="space-between">
               <Typography variant="body2" component="span">
                 Search results for{' '}
-                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                <Typography sx={{ fontWeight: 'regular' }} variant="body1" component="span">
                   {searchValue}
                 </Typography>
               </Typography>
@@ -154,7 +154,7 @@ function HeaderSearch() {
                 </Hidden>
                 <Box flex="1">
                   <Box display="flex" justifyContent="space-between">
-                    <Link href="#" underline="hover" sx={{ fontWeight: 'bold' }} variant="body2">
+                    <Link href="#" underline="hover" sx={{ fontWeight: 'regular' }} variant="body2">
                       Dashboard for Healthcare Platform
                     </Link>
                   </Box>
@@ -185,7 +185,7 @@ function HeaderSearch() {
                 </Hidden>
                 <Box flex="1">
                   <Box display="flex" justifyContent="space-between">
-                    <Link href="#" underline="hover" sx={{ fontWeight: 'bold' }} variant="body2">
+                    <Link href="#" underline="hover" sx={{ fontWeight: 'regular' }} variant="body2">
                       Example Projects Application
                     </Link>
                   </Box>
@@ -216,7 +216,7 @@ function HeaderSearch() {
                 </Hidden>
                 <Box flex="1">
                   <Box display="flex" justifyContent="space-between">
-                    <Link href="#" underline="hover" sx={{ fontWeight: 'bold' }} variant="body2">
+                    <Link href="#" underline="hover" sx={{ fontWeight: 'regular' }} variant="body2">
                       Search Results Page
                     </Link>
                   </Box>

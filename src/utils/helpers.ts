@@ -1,3 +1,5 @@
+import 'sweetalert2/dist/sweetalert2.min.css';
+
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import jwt_decode from 'jwt-decode';
@@ -26,6 +28,7 @@ export const setHeader = (token: string | boolean, tokenName: string) => {
 };
 export const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+
 export const toastr = (message: string, icon: string, title?: string) => {
   const Toast = Swal.mixin({
     toast: true,
@@ -40,17 +43,29 @@ export const toastr = (message: string, icon: string, title?: string) => {
       toast.addEventListener('mouseleave', Swal.resumeTimer);
     },
   });
+
   Toast.fire({
     iconHtml: '',
     title: '',
     html: `
-    <div>
-        <img src="/assets/images/${icon === 'success' ? 'GreenCheck' : 'Error'}.svg" />
-        ${title ? `<h4 class="${icon}">${title}</h4>` : ''}
-        <p>${message}</p>        
-    </div>`,
-    // ${statusCode ? `<p class='mt-1'>Error: ${statusCode}</p>`:''}
-    customClass: 'fireToaster',
+      <div style="
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 16px;
+        max-width: 356px;
+      ">
+        <img src="/assets/images/${icon === 'success' ? 'GreenCheck' : 'Error'}.svg" 
+             alt="${icon}" 
+             style="width: 24px; height: 24px; margin-right: 12px;" />
+        <div>
+          ${title ? `<h4 style="margin: 0; color: ${icon === 'success' ? '#4caf50' : '#f44336'};">${title}</h4>` : ''}
+          <p style="margin: 4px 0; color: #333;">${message}</p>
+        </div>
+      </div>`,
+    customClass: {
+      popup: 'fireToaster',
+    },
     showClass: {
       backdrop: 'swal2-noanimation', // disable backdrop animation
       popup: '', // disable popup animation
@@ -66,6 +81,7 @@ export const toastr = (message: string, icon: string, title?: string) => {
     grow: 'row',
   });
 };
+
 export const confirmDialog = (title: string, head?: string) => {
   return new Promise(resolve => {
     Swal.fire({

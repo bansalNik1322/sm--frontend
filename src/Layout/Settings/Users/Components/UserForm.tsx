@@ -68,8 +68,8 @@ function UserForm(props: PROPS) {
           status: state?.userDetail?.status
             ? 'Active'
             : state?.userDetail?.status === false
-            ? 'Inactive'
-            : ('Active' as string),
+              ? 'Inactive'
+              : ('Active' as string),
         }}
         validateOnChange={false}
         validateOnBlur={false}

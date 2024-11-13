@@ -339,7 +339,7 @@ export const DarkSpacesTheme = createTheme({
           textTransform: 'none',
           marginLeft: 8,
           marginRight: 8,
-          fontWeight: 'bold',
+          fontWeight: 'regular',
         },
       },
     },
@@ -471,7 +471,7 @@ export const DarkSpacesTheme = createTheme({
     MuiListSubheader: {
       styleOverrides: {
         colorPrimary: {
-          fontWeight: 'bold',
+          fontWeight: 'regular',
           lineHeight: '40px',
           fontSize: 13,
           background: colors.alpha.black[5],
@@ -519,8 +519,9 @@ export const DarkSpacesTheme = createTheme({
     MuiAccordion: {
       styleOverrides: {
         root: {
-          boxShadow: 'none',
-
+          // boxShadow: 'none',
+          color: "white",
+          fontSize: "19px",
           '&.Mui-expanded': {
             margin: 0,
           },
@@ -534,7 +535,7 @@ export const DarkSpacesTheme = createTheme({
       styleOverrides: {
         root: {
           fontSize: 14,
-          fontWeight: 'bold',
+          fontWeight: 'regular',
         },
         colorDefault: {
           background: colors.alpha.black[30],
@@ -551,7 +552,7 @@ export const DarkSpacesTheme = createTheme({
           background: colors.alpha.black[10],
           fontSize: 13,
           color: colors.alpha.black[70],
-          fontWeight: 'bold',
+          fontWeight: 'regular',
 
           '&:first-of-type': {
             border: 0,
@@ -571,7 +572,7 @@ export const DarkSpacesTheme = createTheme({
       styleOverrides: {
         page: {
           fontSize: 13,
-          fontWeight: 'bold',
+          fontWeight: 'regular',
           transition: 'all .2s',
         },
         textPrimary: {
@@ -593,7 +594,7 @@ export const DarkSpacesTheme = createTheme({
       },
       styleOverrides: {
         root: {
-          fontWeight: 'bold',
+          fontWeight: 'regular',
           textTransform: 'none',
           paddingLeft: 16,
           paddingRight: 16,
@@ -722,7 +723,7 @@ export const DarkSpacesTheme = createTheme({
         },
         wrapper: {
           background: colors.alpha.white[100],
-          fontWeight: 'bold',
+          fontWeight: 'regular',
           height: 24,
           lineHeight: '24px',
           marginTop: -12,
@@ -992,7 +993,7 @@ export const DarkSpacesTheme = createTheme({
         head: {
           textTransform: 'uppercase',
           fontSize: 13,
-          fontWeight: 'bold',
+          fontWeight: 'regular',
           color: colors.alpha.black[70],
         },
       },
@@ -1161,25 +1162,25 @@ export const DarkSpacesTheme = createTheme({
     fontFamily:
       '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
     h1: {
-      fontWeight: 700,
+      fontWeight: 'regular',
       fontSize: 35,
     },
     h2: {
-      fontWeight: 700,
+      fontWeight: 'regular',
       fontSize: 30,
     },
     h3: {
-      fontWeight: 700,
+      fontWeight: 'regular',
       fontSize: 25,
       lineHeight: 1.4,
       color: colors.alpha.black[100],
     },
     h4: {
-      fontWeight: 700,
+      fontWeight: 'regular',
       fontSize: 16,
     },
     h5: {
-      fontWeight: 700,
+      fontWeight: 'regular',
       fontSize: 14,
     },
     h6: {
@@ -1192,7 +1193,7 @@ export const DarkSpacesTheme = createTheme({
       fontSize: 14,
     },
     button: {
-      fontWeight: 600,
+      fontWeight: 'regular',
     },
     caption: {
       fontSize: 13,
@@ -1210,7 +1211,7 @@ export const DarkSpacesTheme = createTheme({
     },
     overline: {
       fontSize: 13,
-      fontWeight: 700,
+      fontWeight: 'regular',
       textTransform: 'uppercase',
     },
   },

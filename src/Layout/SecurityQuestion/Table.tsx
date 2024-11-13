@@ -1,6 +1,5 @@
+/* eslint-disable import/order */
 import { ArrowBackIosNew, ArrowForwardIos } from '@mui/icons-material';
-import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
-import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import {
   Box,
   Card,
@@ -18,90 +17,41 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TablePagination,
   TableRow,
-  Tooltip,
-  Typography,
-  useTheme,
 } from '@mui/material';
-import { format } from 'date-fns';
 import PropTypes from 'prop-types';
-import { ChangeEvent, FC, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, FC, useCallback, useEffect, useReducer, useRef, useState } from 'react';
 
-import Label from '@/components/Default/Label';
+import { useRequest } from '@/components/App';
+import { BarLoader } from '@/components/App/Loader';
+import { data, initialState, reducer } from '@/components/Default/Table/reducer';
 import { DATATABLE_COLUMN } from '@/types/interfaces';
 
+import { useContainerContext } from '../Container/context';
 import BulkActions from './BulkActions';
 
-interface CryptoOrder {
-  id: string;
-  status: CryptoOrderStatus;
-  orderDetails: string;
-  orderDate: number;
-  orderID: string;
-  sourceName: string;
-  sourceDesc: string;
-  amountCrypto: number;
-  amount: number;
-  cryptoCurrency: string;
-  currency: string;
-}
 type CryptoOrderStatus = 'completed' | 'pending' | 'failed';
 
 interface TableProps {
   className?: string;
-  items: CryptoOrder[];
+  items: Array<data>;
   columns: DATATABLE_COLUMN[];
+  api: { url: string };
+  loading?: boolean;
 }
 
 interface Filters {
   status?: CryptoOrderStatus | null;
 }
 
-const getStatusLabel = (cryptoOrderStatus: CryptoOrderStatus): JSX.Element => {
-  const map = {
-    failed: {
-      text: 'Failed',
-      color: 'error',
-    },
-    completed: {
-      text: 'Completed',
-      color: 'success',
-    },
-    pending: {
-      text: 'Pending',
-      color: 'warning',
-    },
-  };
-
-  const { text, color }: any = map[cryptoOrderStatus];
-
-  return <Label color={color}>{text}</Label>;
-};
-
-const applyFilters = (items: CryptoOrder[], filters: Filters): CryptoOrder[] => {
-  return items.filter(cryptoOrder => {
-    let matches = true;
-
-    if (filters.status && cryptoOrder.status !== filters.status) {
-      matches = false;
-    }
-
-    return matches;
-  });
-};
-
-const applyPagination = (items: CryptoOrder[], page: number, limit: number): CryptoOrder[] => {
-  return items.slice(page * limit, page * limit + limit);
-};
-
-const DataTable: FC<TableProps> = ({ items, columns }) => {
+const DataTable: FC<TableProps> = ({ items, columns, ...props }) => {
+  console.log('🚀 ~ items:', items);
   const tableContainerRef = useRef<HTMLDivElement | null>(null);
-
+  const { request, loading } = useRequest();
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { dispatch: globalDispatch } = useContainerContext();
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const selectedBulkActions = selectedItems.length > 0;
-  const [page, setPage] = useState<number>(0);
-  const [limit, setLimit] = useState<number>(5);
   const [filters, setFilters] = useState<Filters>({
     status: null,
   });
@@ -110,9 +60,10 @@ const DataTable: FC<TableProps> = ({ items, columns }) => {
 
   // This function checks if the table can scroll horizontally
   const checkScrollable = () => {
-    // if (tableContainerRef.current) {
-    // }
-    setIsScrollable(true);
+    if (tableContainerRef.current) {
+      const { scrollWidth, clientWidth } = tableContainerRef.current;
+      setIsScrollable(scrollWidth > clientWidth);
+    }
   };
 
   // Check scrollability on initial load and window resize
@@ -124,6 +75,92 @@ const DataTable: FC<TableProps> = ({ items, columns }) => {
       window.removeEventListener('resize', checkScrollable);
     };
   }, []);
+
+  const NoDataIndication = () => (
+    <TableRow>
+      <TableCell colSpan={10} className="text-center">
+        {loading?.[`${props?.api?.url}_LOADING`] ? <BarLoader /> : 'No Data Found'}
+      </TableCell>
+    </TableRow>
+  );
+
+  const fetchTableData = useCallback(async () => {
+    if (props?.api?.url) {
+      if (props?.loading) return;
+      const payload = {
+        page: 1,
+        limit: 20,
+      };
+
+      const abc = await request(props?.api?.url, payload);
+      console.log('🚀 ~ fetchTableData ~ abc:', abc);
+
+      const { total, pages, result } = (await request(props?.api?.url, payload)) as {
+        result: any;
+        pages: number;
+        total: number;
+      };
+      console.log('🚀 ~ const{total,pages,result}= ~ total:', total, pages, result);
+      if (result && result !== undefined) {
+        const lastPage: number = +Math.ceil(total / 20);
+        const paginationSize = 4;
+        dispatch({
+          type: 'SET_DATA',
+          data: {
+            ...state,
+            endPage:
+              state.endPage && state.endPage > 1
+                ? state.endPage
+                : (lastPage > paginationSize ? paginationSize : lastPage) || 1,
+            totalSize: total,
+            result: items,
+          },
+        });
+        globalDispatch({
+          [props?.api?.url as string]: { result, total, pages },
+        });
+      }
+    }
+  }, [props?.loading]);
+
+  useEffect(() => {
+    if (!props?.api?.url) {
+      const lastPage = Math.ceil(items?.length / state.limit);
+      const paginationSize = 4;
+      dispatch({
+        type: 'SET_DATA',
+        data: {
+          ...state,
+          result: items,
+          endPage: lastPage > paginationSize ? paginationSize : lastPage,
+        },
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (state?.searchKeyword) {
+      const timer = setTimeout(() => {
+        fetchTableData();
+      }, 500);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    } else {
+      if (props?.api?.url) {
+        const timer = setTimeout(() => {
+          fetchTableData();
+        }, 500);
+
+        return () => {
+          clearTimeout(timer);
+        };
+      } else {
+        fetchTableData();
+      }
+    }
+  }, [fetchTableData]);
 
   const scrollTable = (direction: 'left' | 'right') => {
     const tableContainer = document.querySelector('.MuiTableContainer-root') as HTMLElement;
@@ -169,7 +206,7 @@ const DataTable: FC<TableProps> = ({ items, columns }) => {
   };
 
   const handleSelectAllItems = (event: ChangeEvent<HTMLInputElement>): void => {
-    setSelectedItems(event.target.checked ? items.map(item => item.id) : []);
+    setSelectedItems(event.target.checked ? items.map(item => String(item.id)) : []);
   };
 
   const handleSelectItem = (_event: ChangeEvent<HTMLInputElement>, cryptoOrderId: string): void => {
@@ -180,19 +217,8 @@ const DataTable: FC<TableProps> = ({ items, columns }) => {
     }
   };
 
-  const handlePageChange = (_event: any, newPage: number): void => {
-    setPage(newPage);
-  };
-
-  const handleLimitChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    setLimit(parseInt(event.target.value));
-  };
-
-  const filteredCryptoItems = applyFilters(items, filters);
-  const paginatedCryptoOrders = applyPagination(filteredCryptoItems, page, limit);
   const selectedSomeCryptoOrders = selectedItems.length > 0 && selectedItems.length < items.length;
   const selectedAllItems = selectedItems.length === items.length;
-  const theme = useTheme();
 
   return (
     <Card>
@@ -258,6 +284,10 @@ const DataTable: FC<TableProps> = ({ items, columns }) => {
                   onChange={handleSelectAllItems}
                 />
               </TableCell>
+
+              <TableCell align="center" sx={{ minWidth: '150px' }}>
+                ID
+              </TableCell>
               {columns?.map(
                 (column: DATATABLE_COLUMN, i: number) =>
                   (column.hidden === undefined || column.hidden === false) && (
@@ -269,12 +299,12 @@ const DataTable: FC<TableProps> = ({ items, columns }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedCryptoOrders.map((item: any) => {
-              
-              // Only render if item.hidden is undefined or false
-              const isCryptoOrderSelected = selectedItems.includes(item.id);
-              return (
-                <TableRow hover key={item.id} selected={isCryptoOrderSelected}>
+            {items?.length && !loading?.[`${props?.api?.url}_LOADING`] ? (
+              items.map((item: any, i: number) => {
+                // Only render if item.hidden is undefined or false
+                const isCryptoOrderSelected = selectedItems.includes(item.id);
+                return (
+                  <TableRow hover key={item.id} selected={isCryptoOrderSelected}>
                     <TableCell
                       align="center"
                       padding="checkbox"
@@ -284,68 +314,35 @@ const DataTable: FC<TableProps> = ({ items, columns }) => {
                         zIndex: 1,
                         backgroundColor: '#111633',
                       }}
-                      >
+                    >
                       <Checkbox
                         color="primary"
                         checked={isCryptoOrderSelected}
                         onChange={(event: ChangeEvent<HTMLInputElement>) => handleSelectItem(event, item.id)}
                         value={isCryptoOrderSelected}
-                        />
+                      />
                     </TableCell>
-                    {columns.map((col, j) => (
+                    <TableCell align="center" sx={{ minWidth: '150px' }}>
+                      {i + 1}
+                    </TableCell>
+                    {columns.map(
+                      (col, j) =>
                         (col.hidden === undefined || col.hidden === false) && (
-                      <TableCell key={j} align="center" sx={{ minWidth: '150px' }}>
-                        {col?.type === 'date' ? (
-                          <Typography variant="body2" color="text.secondary" noWrap>
-                            {format(item[`${col.dataField}`], 'MMMM dd yyyy')}
-                          </Typography>
-                        ) : col?.type === 'label' ? (
-                          getStatusLabel(item[`${col.dataField}`])
-                        ) : col?.type === 'action' ? (
-                          <>
-                            <Tooltip title="Edit Order" arrow>
-                              <IconButton
-                                sx={{
-                                  '&:hover': {
-                                    background: theme.colors.primary.lighter,
-                                  },
-                                  color: theme.palette.primary.main,
-                                }}
-                                color="inherit"
-                                size="small"
-                              >
-                                <EditTwoToneIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Delete Order" arrow>
-                              <IconButton
-                                sx={{
-                                  '&:hover': { background: theme.colors.error.lighter },
-                                  color: theme.palette.error.main,
-                                }}
-                                color="inherit"
-                                size="small"
-                              >
-                                <DeleteTwoToneIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                          </>
-                        ) : (
-                          <Typography variant="body2" color="text.secondary" noWrap>
-                            {item[`${col.dataField}`]}
-                          </Typography>
-                        )}
-                      </TableCell>)
-                    ))}
+                          <TableCell key={j} align="center" sx={{ minWidth: '150px' }}>
+                            {item[col.dataField]}
+                          </TableCell>
+                        ),
+                    )}
                   </TableRow>
                 );
-              }
-                // Return null for rows that should be hidden
+              })
+            ) : (
+              <NoDataIndication />
             )}
           </TableBody>
         </Table>
       </TableContainer>
-      <Box p={2}>
+      {/* <Box p={2}>
         <TablePagination
           component="div"
           count={filteredCryptoItems.length}
@@ -355,7 +352,7 @@ const DataTable: FC<TableProps> = ({ items, columns }) => {
           rowsPerPage={limit}
           rowsPerPageOptions={[5, 10, 25, 30]}
         />
-      </Box>
+      </Box> */}
     </Card>
   );
 };

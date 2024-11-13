@@ -240,15 +240,15 @@ function SidebarMenu() {
           <SubMenuWrapper>
             <List component="div">
               <ListItem component="div">
-                <NextLink href="/management/transactions" passHref>
+                <NextLink href="/faqs" passHref>
                   <Button
-                    className={currentRoute === '/management/transactions' ? 'active' : ''}
+                    className={currentRoute === '/faqs' ? 'active' : ''}
                     disableRipple
                     component="a"
                     onClick={closeSidebar}
                     startIcon={<TableChartTwoToneIcon />}
                   >
-                    Transactions List
+                    Faqs
                   </Button>
                 </NextLink>
               </ListItem>
