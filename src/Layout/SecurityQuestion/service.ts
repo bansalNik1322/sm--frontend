@@ -6,7 +6,11 @@ const getSecurityQuestionList = async (action: ACTION) => {
   try {
     const { payload } = action;
     console.log('🚀 ~ getSecurityQuestionList ~ payload:', payload);
-    const response: ReturnType<any> = await api(`/api/admin/security-question`, 'GET', { data: payload });
+    const response: ReturnType<any> = await api(
+      `/api/admin/security-question?page=${payload?.page}&limit=${payload?.limit}`,
+      'GET',
+      { data: payload },
+    );
     console.log('🚀 ~ getSecurityQuestionList ~ response:', response);
     return response.data;
   } catch (error) {
@@ -17,7 +21,7 @@ const getSecurityQuestionList = async (action: ACTION) => {
 const getSecurityQuestion = async (action: ACTION) => {
   try {
     const { payload } = action;
-    const response: ReturnType<any> = api(`/api/admin/security-question/${payload?.id}`, 'GET');
+    const response: ReturnType<any> = await api(`/api/admin/security-question/${payload?.id}`, 'GET');
     return response;
   } catch (error) {
     return handleErrors(error as API_ERROR);
@@ -27,7 +31,7 @@ const getSecurityQuestion = async (action: ACTION) => {
 const createSecurityQuestion = async (action: ACTION) => {
   try {
     const { payload } = action;
-    const response: ReturnType<any> = api(`/api/admin/security-question`, 'POST', {
+    const response: ReturnType<any> = await api(`/api/admin/security-question`, 'POST', {
       data: payload,
     });
     return response;
@@ -39,7 +43,7 @@ const createSecurityQuestion = async (action: ACTION) => {
 const updateSecurityQuestion = async (action: ACTION) => {
   try {
     const { payload } = action;
-    const response: ReturnType<any> = api(`/api/admin/security-question/${payload?.id}`, 'PUT', {
+    const response: ReturnType<any> = await api(`/api/admin/security-question/${payload?.id}`, 'PUT', {
       data: payload,
     });
     return response;
@@ -51,9 +55,8 @@ const updateSecurityQuestion = async (action: ACTION) => {
 const deleteSecurityQuestion = async (action: ACTION) => {
   try {
     const { payload } = action;
-    const response: ReturnType<any> = api(`/api/admin/security-question/${payload?.id}`, 'DELETE', {
-      data: payload,
-    });
+    const response: ReturnType<any> = await api(`/api/admin/security-question/${payload?.id}`, 'DELETE', {});
+    console.log('🚀 ~ deleteSecurityQuestion ~ response:', response);
     return response;
   } catch (error) {
     return handleErrors(error as API_ERROR);

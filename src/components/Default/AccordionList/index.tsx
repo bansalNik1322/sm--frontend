@@ -1,15 +1,16 @@
 import { Box, Typography } from '@mui/material';
-import { FC, useCallback, useEffect } from 'react';
+import { FC, useCallback, useEffect, useReducer } from 'react';
 
 import { useRequest } from '@/components/App';
 import { BarLoader } from '@/components/App/Loader';
-import { useCommonReducer } from '@/components/App/reducer';
 import Accordion from '@/components/Default/Accordian';
 import { useContainerContext } from '@/Layout/Container/context';
 
+import CustomPagination from '../Pagination';
+import { initialState, reducer } from '../Table/reducer';
+
 interface ACCORDION_DATA {
-  title: string;
-  content: JSX.Element | JSX.Element[] | string | number | boolean;
+  [field: string]: JSX.Element | JSX.Element[] | string | number | boolean;
 }
 
 interface AccordionListProps {
@@ -18,33 +19,35 @@ interface AccordionListProps {
     url: string;
   };
   loading: boolean;
+  accordionTab?: string;
 }
 
 const AccordionList: FC<AccordionListProps> = ({ data, ...props }) => {
   console.log('🚀 ~ data:', data);
   const { request, loading } = useRequest();
-  const { state, dispatch } = useCommonReducer();
+  const [state, dispatch] = useReducer(reducer, initialState);
   const { dispatch: globalDispatch } = useContainerContext();
 
   const fetchData = useCallback(async () => {
     if (props?.api?.url) {
       if (props?.loading) return;
       const payload = {
-        page: 1,
-        limit: 20,
+        page: state.currentPage || 1,
+        limit: state.limit || 10,
+        ...(props?.accordionTab && { category: props?.accordionTab }),
       };
 
       const abc = await request(props?.api?.url, payload);
       console.log('🚀 ~ fetchTableData ~ abc:', abc);
 
-      const { total, pages, result } = (await request(props?.api?.url, payload)) as {
+      const { total, pages, result, limit } = (await request(props?.api?.url, payload)) as {
         result: any;
         pages: number;
         total: number;
+        limit: number;
       };
-      console.log('🚀 ~ const{total,pages,result}= ~ total:', total, pages, result);
       if (result && result !== undefined) {
-        const lastPage: number = +Math.ceil(total / 20);
+        const lastPage: number = +Math.ceil(total / limit);
         const paginationSize = 4;
         dispatch({
           type: 'SET_DATA',
@@ -55,7 +58,9 @@ const AccordionList: FC<AccordionListProps> = ({ data, ...props }) => {
                 ? state.endPage
                 : (lastPage > paginationSize ? paginationSize : lastPage) || 1,
             totalSize: total,
-            result: data,
+            result,
+            limit,
+            pages,
           },
         });
         globalDispatch({
@@ -63,7 +68,7 @@ const AccordionList: FC<AccordionListProps> = ({ data, ...props }) => {
         });
       }
     }
-  }, [props?.loading]);
+  }, [props?.loading, props?.accordionTab, state.limit, state.currentPage]);
 
   useEffect(() => {
     if (!props?.api?.url) {
@@ -118,6 +123,13 @@ const AccordionList: FC<AccordionListProps> = ({ data, ...props }) => {
       ) : (
         <NoDataIndication />
       )}
+      <Box p={2}>
+        {data.length && !loading?.[`${props?.api?.url}_LOADING`] ? (
+          <CustomPagination state={state} dispatch={dispatch} />
+        ) : (
+          <></>
+        )}
+      </Box>
     </Box>
   );
 };

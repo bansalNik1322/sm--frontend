@@ -2,6 +2,7 @@
 'use client';
 
 import { BorderColorOutlined, DeleteOutlineOutlined } from '@mui/icons-material';
+import { useRouter } from 'next/navigation';
 import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
 import {
   Box,
@@ -48,9 +49,10 @@ const tabs = [
 ];
 
 const Index = () => {
+  const theme = useTheme();
+  const router = useRouter();
   const { state: globalState } = useContainerContext();
   const { request, loading } = useRequest();
-  const theme = useTheme();
   const [currentTab, setCurrentTab] = useState<string>('account_management');
 
   const handleTabsChange = (_event: ChangeEvent<{}>, value: string): void => {
@@ -68,13 +70,16 @@ const Index = () => {
         status: boolean;
         message: string;
       };
-      console.log('🚀 ~ const{status,message}= ~ status:', status, message);
       if (status) {
         toastr('FAQ has been Deleted Successfully', 'success');
         return;
       }
       toastr(message, 'error');
     }
+  };
+
+  const handleEdit = (id: string) => {
+    router.push(`/faqs/${id}`);
   };
 
   const getFaqList = useMemo(
@@ -95,7 +100,7 @@ const Index = () => {
                 >
                   <Typography>{moment.utc(item.createdAt).tz('Asia/Kolkata').format('YYYY-MM-DD HH:mm:ss')}</Typography>
                   <Box>
-                    <Tooltip arrow title="Edit">
+                    <Tooltip arrow title="Edit" onClick={() => handleEdit(item?._id)}>
                       <IconButton
                         aria-label="edit"
                         size="large"
@@ -128,7 +133,7 @@ const Index = () => {
             ),
           }))
         : [],
-    [globalState?.getFaqList?.result],
+    [globalState?.getFaqList?.result, currentTab, handleDelete],
   );
 
   return (
@@ -192,6 +197,7 @@ const Index = () => {
                     url: 'getFaqList',
                   }}
                   loading={Boolean(isLoading)}
+                  accordionTab={currentTab}
                 />
               </CardContent>
             </Card>

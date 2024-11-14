@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { SuspenseLoader } from '@/components/App/Loader';
+import { BarLoader, SuspenseLoader } from '@/components/App/Loader';
 
 function Loading() {
-  return <SuspenseLoader />;
+  return <BarLoader />;
 }
 
 export default Loading;

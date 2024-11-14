@@ -21,7 +21,7 @@ const initialState: InitalState = {
   startPage: 1,
   endPage: 1,
   pages: 1,
-  limit: 25,
+  limit: 10,
   result: [],
   searchKeyword: '',
   sortBy: '',

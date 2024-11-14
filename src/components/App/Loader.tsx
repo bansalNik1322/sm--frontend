@@ -42,7 +42,8 @@ export function SuspenseLoader() {
       <ThreeDots
         height="30"
         width="50"
-        color="var(--sp-primary)"
+        // color="var(--sp-primary)"
+        color="white"
         ariaLabel="three-circles-rotating"
         wrapperStyle={{}}
         wrapperClass=""
@@ -53,7 +54,7 @@ export function SuspenseLoader() {
 }
 
 export function SimpleLoader() {
-  return <Spinner animation="border" style={{ color: 'var(--sp-primary)' }} />;
+  return <Spinner animation="border" style={{ color: 'white' }} />;
 }
 export const useLoading = () => {
   return { ButtonLoader, SimpleLoader };
@@ -81,7 +82,8 @@ export function Loading() {
         <ThreeDots
           height="30"
           width="50"
-          color={'#002e6e'}
+          // color={'#002e6e'}
+          color={'white'}
           ariaLabel="three-circles-rotating"
           wrapperStyle={{}}
           wrapperClass=""

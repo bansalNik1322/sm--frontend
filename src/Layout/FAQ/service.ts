@@ -6,7 +6,11 @@ const getFaqList = async (action: ACTION) => {
   try {
     const { payload } = action;
     console.log('🚀 ~ getFaqList ~ payload:', payload);
-    const response: ReturnType<any> = await api(`/api/admin/faq`, 'GET', { data: payload });
+    const response: ReturnType<any> = await api(
+      `/api/admin/faq?category=${payload?.category}&page=${payload?.page}&limit=${payload?.limit}`,
+      'GET',
+      { data: payload },
+    );
     return response.data;
   } catch (error) {
     return handleErrors(error as API_ERROR);

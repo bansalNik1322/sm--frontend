@@ -6,7 +6,7 @@ import { FC, ReactNode } from 'react';
 import React from 'react';
 
 interface AccordionProps {
-  title: string;
+  title: string | any;
   content: string | ReactNode;
 }
 

@@ -24,6 +24,7 @@ import { ChangeEvent, FC, useCallback, useEffect, useReducer, useRef, useState }
 
 import { useRequest } from '@/components/App';
 import { BarLoader } from '@/components/App/Loader';
+import CustomPagination from '@/components/Default/Pagination';
 import { data, initialState, reducer } from '@/components/Default/Table/reducer';
 import { DATATABLE_COLUMN } from '@/types/interfaces';
 
@@ -62,7 +63,8 @@ const DataTable: FC<TableProps> = ({ items, columns, ...props }) => {
   const checkScrollable = () => {
     if (tableContainerRef.current) {
       const { scrollWidth, clientWidth } = tableContainerRef.current;
-      setIsScrollable(scrollWidth > clientWidth);
+      console.log('🚀 ~ checkScrollable ~ scrollWidth, clientWidth:', scrollWidth, clientWidth);
+      setIsScrollable(scrollWidth > clientWidth - 20);
     }
   };
 
@@ -74,7 +76,7 @@ const DataTable: FC<TableProps> = ({ items, columns, ...props }) => {
     return () => {
       window.removeEventListener('resize', checkScrollable);
     };
-  }, []);
+  }, [isScrollable]);
 
   const NoDataIndication = () => (
     <TableRow>
@@ -88,21 +90,25 @@ const DataTable: FC<TableProps> = ({ items, columns, ...props }) => {
     if (props?.api?.url) {
       if (props?.loading) return;
       const payload = {
-        page: 1,
-        limit: 20,
+        page: state?.currentPage || 1,
+        limit: state.limit || 10,
       };
 
-      const abc = await request(props?.api?.url, payload);
-      console.log('🚀 ~ fetchTableData ~ abc:', abc);
-
-      const { total, pages, result } = (await request(props?.api?.url, payload)) as {
+      const {
+        total,
+        pages,
+        result,
+        limit = 10,
+      } = (await request(props?.api?.url, payload)) as {
         result: any;
         pages: number;
         total: number;
+        limit: number;
       };
-      console.log('🚀 ~ const{total,pages,result}= ~ total:', total, pages, result);
+      console.log('🚀 ~ fetchTableData ~ lastPage:', total, pages, result, limit);
+
       if (result && result !== undefined) {
-        const lastPage: number = +Math.ceil(total / 20);
+        const lastPage: number = +Math.ceil(total / limit);
         const paginationSize = 4;
         dispatch({
           type: 'SET_DATA',
@@ -114,6 +120,7 @@ const DataTable: FC<TableProps> = ({ items, columns, ...props }) => {
                 : (lastPage > paginationSize ? paginationSize : lastPage) || 1,
             totalSize: total,
             result: items,
+            limit: limit,
           },
         });
         globalDispatch({
@@ -121,7 +128,7 @@ const DataTable: FC<TableProps> = ({ items, columns, ...props }) => {
         });
       }
     }
-  }, [props?.loading]);
+  }, [props?.loading, state.currentPage, state.limit, state.totalSize]);
 
   useEffect(() => {
     if (!props?.api?.url) {
@@ -237,6 +244,7 @@ const DataTable: FC<TableProps> = ({ items, columns, ...props }) => {
                     sx={{
                       marginLeft: 2,
                       color: 'text.primary',
+                      fontSize: '17px',
                     }}
                     onClick={() => scrollTable('left')}
                   >
@@ -244,6 +252,7 @@ const DataTable: FC<TableProps> = ({ items, columns, ...props }) => {
                   </IconButton>
                   <IconButton
                     sx={{
+                      fontSize: '17px',
                       marginLeft: 1,
                       color: 'text.primary',
                     }}
@@ -323,7 +332,7 @@ const DataTable: FC<TableProps> = ({ items, columns, ...props }) => {
                       />
                     </TableCell>
                     <TableCell align="center" sx={{ minWidth: '150px' }}>
-                      {i + 1}
+                      {((state?.currentPage - 1) * state?.limit || 0) + i + 1}
                     </TableCell>
                     {columns.map(
                       (col, j) =>
@@ -342,17 +351,13 @@ const DataTable: FC<TableProps> = ({ items, columns, ...props }) => {
           </TableBody>
         </Table>
       </TableContainer>
-      {/* <Box p={2}>
-        <TablePagination
-          component="div"
-          count={filteredCryptoItems.length}
-          onPageChange={handlePageChange}
-          onRowsPerPageChange={handleLimitChange}
-          page={page}
-          rowsPerPage={limit}
-          rowsPerPageOptions={[5, 10, 25, 30]}
-        />
-      </Box> */}
+      <Box p={2}>
+        {items?.length && !loading?.[`${props?.api?.url}_LOADING`] ? (
+          <CustomPagination state={state} dispatch={dispatch} />
+        ) : (
+          <></>
+        )}
+      </Box>
     </Card>
   );
 };
