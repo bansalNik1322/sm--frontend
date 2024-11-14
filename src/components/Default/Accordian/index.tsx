@@ -1,6 +1,6 @@
-import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
-import { Accordion, AccordionDetails, AccordionSummary, Divider, Typography } from '@mui/material';
+import RemoveIcon from '@mui/icons-material/Remove';
+import { Accordion, AccordionDetails, AccordionSummary, Divider, Tooltip, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { FC, ReactNode } from 'react';
 import React from 'react';
@@ -39,7 +39,17 @@ const DefaultAccordion: FC<AccordionProps> = props => {
         }}
       >
         <AccordionSummary
-          expandIcon={expanded ? <RemoveIcon /> : <AddIcon />}
+          expandIcon={
+            expanded ? (
+              <Tooltip arrow title="Close">
+                <RemoveIcon />
+              </Tooltip>
+            ) : (
+              <Tooltip arrow title="Open">
+                <AddIcon />
+              </Tooltip>
+            )
+          }
           aria-controls="panel1-content"
           id="panel1-header"
         >

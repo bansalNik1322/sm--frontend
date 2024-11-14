@@ -1,16 +1,36 @@
 /* eslint-disable @typescript-eslint/ban-types */
 'use client';
 
+import { BorderColorOutlined, DeleteOutlineOutlined } from '@mui/icons-material';
 import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
-import { Button, Card, CardContent, CardHeader, Container, Divider, Grid, Tab, Tabs, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Container,
+  Divider,
+  Grid,
+  IconButton,
+  Tab,
+  Tabs,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
+import moment from 'moment';
 import Head from 'next/head';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useMemo, useState } from 'react';
 
-import DefaultAccordion from '@/components/Default/Accordian';
+import { useRequest } from '@/components/App';
 import AccordionList from '@/components/Default/AccordionList';
+import { showConfirmDialog } from '@/components/Default/ConfirmDialoge';
 import PageHeader from '@/components/Default/PageHeader';
 import PageTitleWrapper from '@/components/Default/PageTitleWrapper';
+import { toastr } from '@/utils/helpers';
+
+import { useContainerContext } from '../Container/context';
 const TabsWrapper = styled(Tabs)(
   () => `
       .MuiTabs-scrollableX {
@@ -28,21 +48,98 @@ const tabs = [
 ];
 
 const Index = () => {
+  const { state: globalState } = useContainerContext();
+  const { request, loading } = useRequest();
   const theme = useTheme();
   const [currentTab, setCurrentTab] = useState<string>('account_management');
+
   const handleTabsChange = (_event: ChangeEvent<{}>, value: string): void => {
     setCurrentTab(value);
   };
 
+  const isLoading = useMemo(() => {
+    return loading?.deleteFaq_LOADING;
+  }, [loading]);
+
+  const handleDelete = async (id: string) => {
+    const confirmed = await showConfirmDialog('Are you sure you want to delete?');
+    if (confirmed) {
+      const { status, message } = (await request('deleteFaq', { id })) as {
+        status: boolean;
+        message: string;
+      };
+      console.log('🚀 ~ const{status,message}= ~ status:', status, message);
+      if (status) {
+        toastr('FAQ has been Deleted Successfully', 'success');
+        return;
+      }
+      toastr(message, 'error');
+    }
+  };
+
+  const getFaqList = useMemo(
+    () =>
+      globalState?.getFaqList?.result
+        ? globalState?.getFaqList?.result?.map((item: any) => ({
+            title: item?.question,
+            content: (
+              <Box>
+                <Typography>{item?.answer}</Typography>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginTop: '10px',
+                  }}
+                >
+                  <Typography>{moment.utc(item.createdAt).tz('Asia/Kolkata').format('YYYY-MM-DD HH:mm:ss')}</Typography>
+                  <Box>
+                    <Tooltip arrow title="Edit">
+                      <IconButton
+                        aria-label="edit"
+                        size="large"
+                        sx={{
+                          '&:hover': {
+                            backgroundColor: 'inherit',
+                          },
+                        }}
+                      >
+                        <BorderColorOutlined />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip arrow title="Delete">
+                      <IconButton
+                        onClick={() => handleDelete(item?._id)}
+                        aria-label="delete"
+                        sx={{
+                          '&:hover': {
+                            backgroundColor: 'inherit',
+                          },
+                        }}
+                        size="large"
+                      >
+                        <DeleteOutlineOutlined sx={{ color: 'red' }} />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                </Box>
+              </Box>
+            ),
+          }))
+        : [],
+    [globalState?.getFaqList?.result],
+  );
+
   return (
     <>
       <Head>
-        <title>FAQs</title>
+        <title>FAQ Management</title>
       </Head>
       <PageTitleWrapper>
         <PageHeader
-          heading="FAQs"
-          content={<Typography variant="subtitle2">Manage your FAQs</Typography>}
+          heading="FAQ Management"
+          content={<Typography variant="subtitle2">Manage frequently asked questions</Typography>}
           action={
             <Button sx={{ mt: { xs: 2, md: 0 } }} variant="contained" startIcon={<AddTwoToneIcon fontSize="small" />}>
               Add FAQ
@@ -80,7 +177,7 @@ const Index = () => {
                 },
               }}
             >
-              <CardHeader title="Hey, How Are You" />
+              <CardHeader title={`Frequently asked questions related to ${currentTab}`} />
               <Divider
                 sx={{
                   mt: theme.spacing(1),
@@ -90,12 +187,11 @@ const Index = () => {
               />
               <CardContent>
                 <AccordionList
-                  data={[
-                    { title: 'First Title', content: 'Here is the content' },
-                    { title: 'First Title', content: 'Here is the content' },
-                    { title: 'First Title', content: 'Here is the content' },
-                    { title: 'First Title', content: 'Here is the content' },
-                  ]}
+                  data={getFaqList}
+                  api={{
+                    url: 'getFaqList',
+                  }}
+                  loading={Boolean(isLoading)}
                 />
               </CardContent>
             </Card>

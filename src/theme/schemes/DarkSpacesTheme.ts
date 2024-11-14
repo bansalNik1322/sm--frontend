@@ -520,8 +520,8 @@ export const DarkSpacesTheme = createTheme({
       styleOverrides: {
         root: {
           // boxShadow: 'none',
-          color: "white",
-          fontSize: "19px",
+          color: 'white',
+          fontSize: '19px',
           '&.Mui-expanded': {
             margin: 0,
           },

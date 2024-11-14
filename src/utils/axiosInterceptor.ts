@@ -88,11 +88,19 @@ export const api: API = async (url, method = 'GET', options = {}) => {
   config = { ...config, ...options };
   try {
     const resp = await axios(config);
+    console.log('🚀 ~ constapi:API= ~ resp:', resp);
     return resp.data;
   } catch (e: any) {
-    console.log('error', e?.response?.data);
+    if (e?.response?.data?.code === 500) {
+      console.log('🚀 ~ constapi:API= ~ e?.response?.data?.status:', e?.response?.data);
+      return e?.response?.data;
+    }
     if (typeof window !== 'undefined') {
       document.body.style.pointerEvents = 'auto';
+    }
+    if (e?.response?.data?.status === false && e?.response?.data?.message) {
+      toastr(e?.response?.message, 'error');
+      throw e.response.data;
     }
     if (e?.response?.data) {
       if (e.response.status === 504) {
