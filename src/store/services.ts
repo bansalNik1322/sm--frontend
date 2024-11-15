@@ -6,3 +6,4 @@ export * from '@/Layout/Settings/Branding/service';
 export * from '@/Layout/Container/Components/EditColumns/service';
 export * from '@/Layout/SecurityQuestion/service';
 export * from '@/Layout/FAQ/service';
+export * from '@/Layout/ContentManager/service';

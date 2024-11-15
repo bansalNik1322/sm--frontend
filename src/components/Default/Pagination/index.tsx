@@ -4,9 +4,10 @@ import { FC, useCallback } from 'react';
 interface PaginationProps {
   dispatch: any;
   state: any;
+  data: any;
 }
 
-const CustomPagination: FC<PaginationProps> = ({ state, ...props }) => {
+const CustomPagination: FC<PaginationProps> = ({ state, data, ...props }) => {
   console.log('🚀 ~ { state, ...props }:', { state, ...props });
   const onPageChange = useCallback(
     (_event: React.ChangeEvent<unknown>, value: number) => {
@@ -18,7 +19,7 @@ const CustomPagination: FC<PaginationProps> = ({ state, ...props }) => {
         },
       });
     },
-    [state, props.dispatch],
+    [state, props.dispatch, data],
   );
 
   const onChangeRecordPerPage = useCallback(
@@ -31,7 +32,7 @@ const CustomPagination: FC<PaginationProps> = ({ state, ...props }) => {
         },
       });
     },
-    [state, props.dispatch],
+    [state, props.dispatch, data],
   );
 
   return (

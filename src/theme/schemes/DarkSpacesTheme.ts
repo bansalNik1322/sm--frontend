@@ -451,6 +451,7 @@ export const DarkSpacesTheme = createTheme({
         icon: {
           top: 'calc(50% - 14px)',
         },
+
       },
     },
     MuiOutlinedInput: {

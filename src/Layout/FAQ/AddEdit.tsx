@@ -1,22 +1,42 @@
 import { FC } from 'react';
 import * as yup from 'yup';
-import { Button, Card, Container, FormControl, Grid, TextField } from '@mui/material';
+import { Button, Card, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { SuspenseLoader } from '@/components/App/Loader';
 
 interface PROPS {
   schema: yup.AnyObjectSchema;
-  handleSubmit: (values: { question: string; answer: string }) => Promise<void>;
-  initialValues: { question: string; answer: string };
+  handleSubmit: (values: { question: string; answer: string; category: string }) => Promise<void>;
+  initialValues: { question: string; answer: string; category: string };
   loading: boolean;
 }
 
+const categories = [
+  { value: 'account_management', label: 'Account Management' },
+  { value: 'troubleshooting', label: 'Troubleshooting / Common Issues' },
+  { value: 'policies', label: 'Policies and Security' },
+  { value: 'security', label: 'Passwords/Security' },
+  { value: 'others', label: 'Other' },
+];
+
 const AddEditFaq: FC<PROPS> = ({ schema, handleSubmit, initialValues, loading }) => {
   return (
-    <Card sx={{ textAlign: 'right', mt: 3, p: 4 }}>
+    <Card sx={{ mt: 3, p: 4 }}>
       <Formik initialValues={initialValues} validationSchema={schema} onSubmit={handleSubmit}>
         {({ isSubmitting, touched, errors }) => (
           <Form>
+            <FormControl variant="outlined" fullWidth sx={{ mb: 3 }}>
+              <InputLabel>Category</InputLabel>
+              <Field as={Select} name="category" label="Category" error={touched.category && Boolean(errors.category)}>
+                {categories.map(option => (
+                  <MenuItem sx={{ textAlign: 'left' }} key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Field>
+              <ErrorMessage name="category" component="div" />
+            </FormControl>
+
             <FormControl variant="outlined" fullWidth>
               <Field
                 as={TextField}
@@ -28,6 +48,7 @@ const AddEditFaq: FC<PROPS> = ({ schema, handleSubmit, initialValues, loading })
                 helperText={<ErrorMessage name="question" />}
               />
             </FormControl>
+
             <FormControl variant="outlined" fullWidth sx={{ mt: 3 }}>
               <Field
                 as={TextField}
@@ -41,7 +62,14 @@ const AddEditFaq: FC<PROPS> = ({ schema, handleSubmit, initialValues, loading })
                 helperText={<ErrorMessage name="answer" />}
               />
             </FormControl>
-            <Button type="submit" variant="contained" size="medium" sx={{ margin: 2, mr: 0 }} disabled={isSubmitting}>
+
+            <Button
+              type="submit"
+              variant="contained"
+              size="medium"
+              sx={{ margin: 2, mr: 0, float: 'right' }}
+              disabled={isSubmitting}
+            >
               {loading ? <SuspenseLoader /> : 'Submit'}
             </Button>
           </Form>

@@ -1,4 +1,8 @@
 import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone';
+import SecurityTwoToneIcon from '@mui/icons-material/SecurityTwoTone';
+import HelpTwoToneIcon from '@mui/icons-material/HelpTwoTone';
+import EmailTwoToneIcon from '@mui/icons-material/EmailTwoTone';
+import FolderTwoToneIcon from '@mui/icons-material/FolderTwoTone';
 import BallotTwoToneIcon from '@mui/icons-material/BallotTwoTone';
 import BeachAccessTwoToneIcon from '@mui/icons-material/BeachAccessTwoTone';
 import BrightnessLowTwoToneIcon from '@mui/icons-material/BrightnessLowTwoTone';
@@ -246,7 +250,7 @@ function SidebarMenu() {
                     disableRipple
                     component="a"
                     onClick={closeSidebar}
-                    startIcon={<TableChartTwoToneIcon />}
+                    startIcon={<HelpTwoToneIcon />}
                   >
                     Faqs
                   </Button>
@@ -259,9 +263,37 @@ function SidebarMenu() {
                     disableRipple
                     component="a"
                     onClick={closeSidebar}
-                    startIcon={<TableChartTwoToneIcon />}
+                    startIcon={<SecurityTwoToneIcon />}
                   >
                     Security Questions
+                  </Button>
+                </NextLink>
+              </ListItem>
+
+              <ListItem component="div">
+                <NextLink href="/content-manager" passHref>
+                  <Button
+                    className={currentRoute === '/content-manager' ? 'active' : ''}
+                    disableRipple
+                    component="a"
+                    onClick={closeSidebar}
+                    startIcon={<FolderTwoToneIcon />}
+                  >
+                    Content Manager
+                  </Button>
+                </NextLink>
+              </ListItem>
+
+              <ListItem component="div">
+                <NextLink href="/email-template" passHref>
+                  <Button
+                    className={currentRoute === '/email-template' ? 'active' : ''}
+                    disableRipple
+                    component="a"
+                    onClick={closeSidebar}
+                    startIcon={<EmailTwoToneIcon />}
+                  >
+                    Emaiil Template
                   </Button>
                 </NextLink>
               </ListItem>

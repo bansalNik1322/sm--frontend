@@ -28,7 +28,8 @@ const Index: FC<PROPS> = ({ data }) => {
       message: string;
     };
     if (status) {
-      router.push('/security-questions');
+      toastr('Faq Updated Successfully!!', 'success');
+      router.push('/faqs');
     } else {
       toastr(message, 'error');
     }
@@ -37,6 +38,7 @@ const Index: FC<PROPS> = ({ data }) => {
   const initialValues = {
     question: data?.question || '',
     answer: data?.answer || '',
+    category: data?.category || '',
   };
 
   return (
@@ -49,7 +51,12 @@ const Index: FC<PROPS> = ({ data }) => {
           heading="FAQ Management"
           content={<Typography variant="subtitle2">Update frequently asked question</Typography>}
           action={
-            <Button sx={{ mt: { xs: 2, md: 0 } }} variant="contained" startIcon={<AddTwoToneIcon fontSize="small" />}>
+            <Button
+              href="/faqs/add"
+              sx={{ mt: { xs: 2, md: 0 } }}
+              variant="contained"
+              startIcon={<AddTwoToneIcon fontSize="small" />}
+            >
               Add FAQ
             </Button>
           }

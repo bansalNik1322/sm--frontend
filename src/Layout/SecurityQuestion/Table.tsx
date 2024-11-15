@@ -1,4 +1,5 @@
 /* eslint-disable import/order */
+import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import { ArrowBackIosNew, ArrowForwardIos } from '@mui/icons-material';
 import {
   Box,
@@ -14,13 +15,16 @@ import {
   SelectChangeEvent,
   Table,
   TableBody,
+  Typography,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  Button,
+  Tooltip,
 } from '@mui/material';
 import PropTypes from 'prop-types';
-import { ChangeEvent, FC, useCallback, useEffect, useReducer, useRef, useState } from 'react';
+import { ChangeEvent, FC, useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 
 import { useRequest } from '@/components/App';
 import { BarLoader } from '@/components/App/Loader';
@@ -29,9 +33,18 @@ import { data, initialState, reducer } from '@/components/Default/Table/reducer'
 import { DATATABLE_COLUMN } from '@/types/interfaces';
 
 import { useContainerContext } from '../Container/context';
-import BulkActions from './BulkActions';
+import { styled } from '@mui/material/styles';
 
-type CryptoOrderStatus = 'completed' | 'pending' | 'failed';
+const ButtonError = styled(Button)(
+  ({ theme }) => `
+     background: ${theme.colors.error.main};
+     color: ${theme.palette.error.contrastText};
+
+     &:hover {
+        background: ${theme.colors.error.dark};
+     }
+    `,
+);
 
 interface TableProps {
   className?: string;
@@ -39,23 +52,21 @@ interface TableProps {
   columns: DATATABLE_COLUMN[];
   api: { url: string };
   loading?: boolean;
-}
-
-interface Filters {
-  status?: CryptoOrderStatus | null;
+  filterOptions?: string[] | [];
+  action: {
+    handleDelete: (ids: string[]) => void;
+  };
 }
 
 const DataTable: FC<TableProps> = ({ items, columns, ...props }) => {
-  console.log('🚀 ~ items:', items);
   const tableContainerRef = useRef<HTMLDivElement | null>(null);
   const { request, loading } = useRequest();
   const [state, dispatch] = useReducer(reducer, initialState);
   const { dispatch: globalDispatch } = useContainerContext();
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const selectedBulkActions = selectedItems.length > 0;
-  const [filters, setFilters] = useState<Filters>({
-    status: null,
-  });
+  const selectedBulkActions = useMemo(() => {
+    return selectedItems.length > 0;
+  }, [items, selectedItems]);
 
   const [isScrollable, setIsScrollable] = useState<boolean>(false);
 
@@ -63,9 +74,13 @@ const DataTable: FC<TableProps> = ({ items, columns, ...props }) => {
   const checkScrollable = () => {
     if (tableContainerRef.current) {
       const { scrollWidth, clientWidth } = tableContainerRef.current;
-      console.log('🚀 ~ checkScrollable ~ scrollWidth, clientWidth:', scrollWidth, clientWidth);
       setIsScrollable(scrollWidth > clientWidth - 20);
     }
+  };
+
+  const handleBulkDelete = (ids: string[]) => {
+    props.action.handleDelete(ids);
+    setSelectedItems([]);
   };
 
   // Check scrollability on initial load and window resize
@@ -80,7 +95,7 @@ const DataTable: FC<TableProps> = ({ items, columns, ...props }) => {
 
   const NoDataIndication = () => (
     <TableRow>
-      <TableCell colSpan={10} className="text-center">
+      <TableCell colSpan={columns.length + 2} className="text-center">
         {loading?.[`${props?.api?.url}_LOADING`] ? <BarLoader /> : 'No Data Found'}
       </TableCell>
     </TableRow>
@@ -105,7 +120,6 @@ const DataTable: FC<TableProps> = ({ items, columns, ...props }) => {
         total: number;
         limit: number;
       };
-      console.log('🚀 ~ fetchTableData ~ lastPage:', total, pages, result, limit);
 
       if (result && result !== undefined) {
         const lastPage: number = +Math.ceil(total / limit);
@@ -199,39 +213,43 @@ const DataTable: FC<TableProps> = ({ items, columns, ...props }) => {
     },
   ];
 
-  const handleStatusChange = (event: SelectChangeEvent<string>): void => {
-    let value: CryptoOrderStatus | null = null;
-
-    if (event.target.value !== 'all') {
-      value = event.target.value as CryptoOrderStatus; // Type assertion
-    }
-
-    setFilters(prevFilters => ({
-      ...prevFilters,
-      status: value,
-    }));
-  };
-
   const handleSelectAllItems = (event: ChangeEvent<HTMLInputElement>): void => {
     setSelectedItems(event.target.checked ? items.map(item => String(item.id)) : []);
   };
 
-  const handleSelectItem = (_event: ChangeEvent<HTMLInputElement>, cryptoOrderId: string): void => {
-    if (!selectedItems.includes(cryptoOrderId)) {
-      setSelectedItems(prevSelected => [...prevSelected, cryptoOrderId]);
+  const handleSelectItem = (_event: ChangeEvent<HTMLInputElement>, id: string): void => {
+    if (!selectedItems.includes(id)) {
+      setSelectedItems(prevSelected => [...prevSelected, id]);
     } else {
-      setSelectedItems(prevSelected => prevSelected.filter(id => id !== cryptoOrderId));
+      setSelectedItems(prevSelected => prevSelected.filter(i => i !== id));
     }
   };
 
-  const selectedSomeCryptoOrders = selectedItems.length > 0 && selectedItems.length < items.length;
-  const selectedAllItems = selectedItems.length === items.length;
+  const selectedAllItems = useMemo(() => {
+    return selectedItems.length === items.length;
+  }, [items, selectedItems]);
 
   return (
     <Card>
       {selectedBulkActions && (
         <Box flex={1} p={2}>
-          <BulkActions />
+          <>
+            <Box display="flex" alignItems="center" justifyContent="space-between">
+              <Box display="flex" alignItems="center">
+                <Typography variant="h5" color="text.secondary">
+                  Bulk actions:
+                </Typography>
+                <ButtonError
+                  sx={{ ml: 1 }}
+                  startIcon={<DeleteTwoToneIcon />}
+                  variant="contained"
+                  onClick={() => handleBulkDelete(selectedItems)}
+                >
+                  Delete
+                </ButtonError>
+              </Box>
+            </Box>
+          </>
         </Box>
       )}
       {!selectedBulkActions && (
@@ -240,35 +258,39 @@ const DataTable: FC<TableProps> = ({ items, columns, ...props }) => {
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
               {isScrollable && (
                 <>
-                  <IconButton
-                    sx={{
-                      marginLeft: 2,
-                      color: 'text.primary',
-                      fontSize: '17px',
-                    }}
-                    onClick={() => scrollTable('left')}
-                  >
-                    <ArrowBackIosNew />
-                  </IconButton>
-                  <IconButton
-                    sx={{
-                      fontSize: '17px',
-                      marginLeft: 1,
-                      color: 'text.primary',
-                    }}
-                    onClick={() => scrollTable('right')}
-                  >
-                    <ArrowForwardIos />
-                  </IconButton>
+                  <Tooltip title="Next Page" arrow>
+                    <IconButton
+                      sx={{
+                        marginLeft: 2,
+                        color: 'text.primary',
+                        fontSize: '17px',
+                      }}
+                      onClick={() => scrollTable('left')}
+                    >
+                      <ArrowBackIosNew />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Previous Page" arrow>
+                    <IconButton
+                      sx={{
+                        fontSize: '17px',
+                        marginLeft: 1,
+                        color: 'text.primary',
+                      }}
+                      onClick={() => scrollTable('right')}
+                    >
+                      <ArrowForwardIos />
+                    </IconButton>
+                  </Tooltip>
                 </>
               )}
               <Box width={150}>
                 <FormControl fullWidth variant="outlined">
                   <InputLabel>Status</InputLabel>
-                  <Select value={filters.status || 'all'} onChange={handleStatusChange} label="Status" autoWidth>
-                    {statusOptions.map(statusOption => (
-                      <MenuItem key={statusOption.id} value={statusOption.id}>
-                        {statusOption.name}
+                  <Select label="Status" autoWidth>
+                    {props?.filterOptions?.map(option => (
+                      <MenuItem key={option} value={option}>
+                        {option?.toUpperCase()}
                       </MenuItem>
                     ))}
                   </Select>
@@ -289,18 +311,18 @@ const DataTable: FC<TableProps> = ({ items, columns, ...props }) => {
                 <Checkbox
                   color="primary"
                   checked={selectedAllItems}
-                  indeterminate={selectedSomeCryptoOrders}
+                  indeterminate={selectedAllItems}
                   onChange={handleSelectAllItems}
                 />
               </TableCell>
 
-              <TableCell align="center" sx={{ minWidth: '150px' }}>
+              <TableCell align="center" sx={{ width: 'auto', whiteSpace: 'nowrap', minWidth: '150px' }}>
                 ID
               </TableCell>
               {columns?.map(
                 (column: DATATABLE_COLUMN, i: number) =>
                   (column.hidden === undefined || column.hidden === false) && (
-                    <TableCell align="center" sx={{ minWidth: '150px' }} key={i}>
+                    <TableCell align="center" sx={{ width: 'auto', whiteSpace: 'nowrap', minWidth: '150px' }} key={i}>
                       {column.text}
                     </TableCell>
                   ),
@@ -311,9 +333,9 @@ const DataTable: FC<TableProps> = ({ items, columns, ...props }) => {
             {items?.length && !loading?.[`${props?.api?.url}_LOADING`] ? (
               items.map((item: any, i: number) => {
                 // Only render if item.hidden is undefined or false
-                const isCryptoOrderSelected = selectedItems.includes(item.id);
+                const isRecordSelected = selectedItems.includes(item.id);
                 return (
-                  <TableRow hover key={item.id} selected={isCryptoOrderSelected}>
+                  <TableRow hover key={item.id} selected={isRecordSelected}>
                     <TableCell
                       align="center"
                       padding="checkbox"
@@ -326,18 +348,23 @@ const DataTable: FC<TableProps> = ({ items, columns, ...props }) => {
                     >
                       <Checkbox
                         color="primary"
-                        checked={isCryptoOrderSelected}
+                        checked={isRecordSelected}
                         onChange={(event: ChangeEvent<HTMLInputElement>) => handleSelectItem(event, item.id)}
-                        value={isCryptoOrderSelected}
+                        value={isRecordSelected}
+                        indeterminate={isRecordSelected}
                       />
                     </TableCell>
-                    <TableCell align="center" sx={{ minWidth: '150px' }}>
+                    <TableCell align="center" sx={{ width: 'auto', whiteSpace: 'nowrap', minWidth: '150px' }}>
                       {((state?.currentPage - 1) * state?.limit || 0) + i + 1}
                     </TableCell>
                     {columns.map(
                       (col, j) =>
                         (col.hidden === undefined || col.hidden === false) && (
-                          <TableCell key={j} align="center" sx={{ minWidth: '150px' }}>
+                          <TableCell
+                            key={j}
+                            align="center"
+                            sx={{ width: 'auto', whiteSpace: 'nowrap', minWidth: '150px' }}
+                          >
                             {item[col.dataField]}
                           </TableCell>
                         ),
@@ -353,7 +380,7 @@ const DataTable: FC<TableProps> = ({ items, columns, ...props }) => {
       </TableContainer>
       <Box p={2}>
         {items?.length && !loading?.[`${props?.api?.url}_LOADING`] ? (
-          <CustomPagination state={state} dispatch={dispatch} />
+          <CustomPagination state={state} dispatch={dispatch} data={items} />
         ) : (
           <></>
         )}

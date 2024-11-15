@@ -19,20 +19,40 @@ import { toastr } from '@/utils/helpers';
 
 import Footer from '../Container/Components/Footer';
 import { useContainerContext } from '../Container/context';
-import Table from './Table';
+import Table from '@/Layout/SecurityQuestion/Table';
 
 const columns: DATATABLE_COLUMN[] = [
   {
-    dataField: 'question',
-    text: 'Question',
+    dataField: 'title',
+    text: 'Title',
   },
   {
-    dataField: 'status',
-    text: 'Status',
+    dataField: 'slug',
+    text: 'Slug',
+  },
+  {
+    dataField: 'metaDescription',
+    text: 'Meta Description',
+  },
+  {
+    dataField: 'metaKeywords',
+    text: 'Meta Keywords',
+  },
+  {
+    dataField: 'description',
+    text: 'Description',
+  },
+  {
+    dataField: 'metaTitle',
+    text: 'Meta Title',
   },
   {
     dataField: 'createdAt',
     text: 'Created At (UTC)',
+  },
+  {
+    dataField: 'status',
+    text: 'Status',
   },
   {
     dataField: 'action',
@@ -46,64 +66,79 @@ function Index() {
   const { state: globalState } = useContainerContext();
   const { request, loading } = useRequest();
 
-  const handleStatusChange = async (id: string, questionStatus: boolean) => {
+  const handleStatusChange = async (slug: string, cmsStatus: boolean) => {
     const confirmed = await showConfirmDialog('Are you sure to change Status!!');
     if (confirmed) {
-      const { status, message } = (await request('updateSecurityQuestion', { id, status: questionStatus })) as {
+      const { status, message } = (await request('updateContentManager', { slug, active: cmsStatus })) as {
         status: boolean;
         message: string;
       };
       if (status) {
-        toastr('Question status has been updated Successfully', 'success');
+        toastr('CMS status has been updated Successfully', 'success');
+      }else{
+        toastr(message, 'error');
       }
-      toastr(message, 'error');
     }
   };
 
-  const handleDelete = async (ids: string[]) => {
+  const handleDelete = async (slugs: string[]) => {
     const confirmed = await showConfirmDialog('Are you sure to Delete!!');
     if (confirmed) {
       console.log('🚀 ~ handleDelete ~ confirmed:', confirmed);
-      const { status, message } = (await request('deleteSecurityQuestion', { id: ids[0] })) as {
+      const { status, message } = (await request('deleteContentManager', { slug: slugs[0] })) as {
         status: boolean;
         message: string;
       };
-      console.log('🚀 ~ const{status,message}= ~ status:', status);
+ 
       if (status) {
-        toastr('Question has been deleted Successfully', 'success');
+        toastr('CMS has been deleted Successfully', 'success');
       } else {
         toastr(message, 'error');
       }
     }
   };
 
-  const handleEdit = (id: string) => {
-    router.push(`/security-questions/${id}`);
+  const handleEdit = (slug: string) => {
+    router.push(`/content-manager/${slug}`);
   };
 
   const isLoading = useMemo(() => {
-    return loading?.updateSecurityQuestion_LOADING || loading?.deleteSecurityQuestion_LOADING;
+    return loading?.updateContentManager_LOADING || loading?.deleteContentManager_LOADING;
   }, [loading]);
 
-  const getSecurityQuestionList = useMemo(
+  const getContentManagerList = useMemo(
     () =>
-      globalState?.getSecurityQuestionList?.result
-        ? globalState.getSecurityQuestionList.result.map((item: any) => ({
-            id: item._id,
-            question: (
+      globalState?.getContentManagerList?.result
+        ? globalState.getContentManagerList.result.map((item: any) => ({
+            id: item.slug,
+            title: (
               <Typography variant="body2" color="text.secondary" noWrap>
-                {item.question}
+                {item.title}
               </Typography>
             ),
-            status: (
-              <Typography
-                onClick={() => handleStatusChange(item?._id, !item?.status)}
-                variant="body2"
-                color="text.secondary"
-                sx={{ cursor: 'pointer' }}
-                noWrap
-              >
-                {item.status ? <Label color="success">Active</Label> : <Label color="error">Inactive</Label>}
+            slug: (
+              <Typography variant="body2" color="text.secondary" noWrap>
+                {item.slug}
+              </Typography>
+            ),
+            metaDescription: (
+              <Typography variant="body2" color="text.secondary" noWrap>
+                {item.metaDescription}
+              </Typography>
+            ),
+            metaKeywords: (
+              <Typography variant="body2" color="text.secondary" noWrap>
+                {item.metaKeywords}
+              </Typography>
+            ),
+            description: (
+              <Typography variant="body2" color="text.secondary" noWrap>
+                {item.metaKeywords}
+              </Typography>
+            ),
+            metaTitle: (
+              <Typography variant="body2" color="text.secondary" noWrap>
+                {item.metaTitle}
               </Typography>
             ),
             createdAt: (
@@ -111,10 +146,22 @@ function Index() {
                 {moment.utc(item.createdAt).tz('Asia/Kolkata').format('YYYY-MM-DD HH:mm:ss')}
               </Typography>
             ),
+            status: (
+              <Typography
+                onClick={() => handleStatusChange(item?.slug, !item?.status)}
+                variant="body2"
+                color="text.secondary"
+                sx={{ cursor: 'pointer' }}
+                noWrap
+              >
+                {item.active ? <Label color="success">Active</Label> : <Label color="error">Inactive</Label>}
+              </Typography>
+            ),
             action: (
               <>
-                <Tooltip title="Edit Record" arrow onClick={() => handleEdit(item?._id)}>
+                <Tooltip title="Edit Record" arrow>
                   <IconButton
+                    onClick={() => handleEdit(item?.slug)}
                     sx={{
                       '&:hover': {
                         background: theme.colors.primary.lighter,
@@ -135,7 +182,7 @@ function Index() {
                     }}
                     color="inherit"
                     size="small"
-                    onClick={() => handleDelete([item?._id])}
+                    onClick={() => handleDelete([item?.slug])}
                   >
                     <DeleteTwoToneIcon fontSize="small" />
                   </IconButton>
@@ -144,7 +191,7 @@ function Index() {
             ),
           }))
         : [],
-    [globalState?.getSecurityQuestionList?.result],
+    [globalState?.getContentManagerList?.result],
   );
 
   return (
@@ -154,8 +201,8 @@ function Index() {
       </Head>
       <PageTitleWrapper>
         <PageHeader
-          heading="Security Settings"
-          content={<Typography variant="subtitle2">Manage your security questions and settings</Typography>}
+          heading="Content Management"
+          content={<Typography variant="subtitle2">Manage your content and resources easily</Typography>}
           action={
             <Button
               href="/security-questions/add"
@@ -163,7 +210,7 @@ function Index() {
               variant="contained"
               startIcon={<AddTwoToneIcon fontSize="small" />}
             >
-              Add Security Question
+              Add New Page
             </Button>
           }
         />
@@ -173,10 +220,10 @@ function Index() {
         <Grid container direction="row" justifyContent="center" alignItems="stretch" spacing={3}>
           <Grid item xs={12}>
             <Table
-              items={getSecurityQuestionList}
+              items={getContentManagerList}
               columns={columns}
               api={{
-                url: 'getSecurityQuestionList',
+                url: 'getContentManagerList',
               }}
               loading={Boolean(isLoading)}
               action={{

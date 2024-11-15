@@ -1,17 +1,13 @@
-import axios from 'axios';
 import { Metadata } from 'next';
-import { GetServerSideProps } from 'next';
-import { notFound, redirect } from 'next/navigation';
-
-import AddSecurityQuestion from '@/Layout/SecurityQuestion/Add';
+import AddFaq from '@/Layout/FAQ/Add';
 
 export const metadata: Metadata = {
-  title: 'Add Security Question',
-  description: 'Add Security Question',
+  title: 'FAQ',
+  description: 'FAQ',
 };
 
-async function Index() {
-  return <AddSecurityQuestion />;
+async function Index({ params }: { params: { id: string } }) {
+  return <AddFaq />;
 }
 
 export default Index;

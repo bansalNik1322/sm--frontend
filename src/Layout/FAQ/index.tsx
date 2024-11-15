@@ -146,7 +146,12 @@ const Index = () => {
           heading="FAQ Management"
           content={<Typography variant="subtitle2">Manage frequently asked questions</Typography>}
           action={
-            <Button sx={{ mt: { xs: 2, md: 0 } }} variant="contained" startIcon={<AddTwoToneIcon fontSize="small" />}>
+            <Button
+              href="/faqs/add"
+              sx={{ mt: { xs: 2, md: 0 } }}
+              variant="contained"
+              startIcon={<AddTwoToneIcon fontSize="small" />}
+            >
               Add FAQ
             </Button>
           }

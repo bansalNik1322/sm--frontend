@@ -36,7 +36,7 @@ const Index: FC<PROPS> = ({ data }) => {
     if (status) {
       router.push('/security-questions');
     } else {
-      toastr(message, 'error');
+      toastr('Something Went Wrong!!', 'error');
     }
   };
 

@@ -1,0 +1,139 @@
+.jodit-toolbar__box,
+.jodit-workplace,
+.jodit-status-bar,
+.jodit-container {
+    background-color: transparent !important;
+}
+
+.jodit-toolbar-button__trigger {
+    fill: white !important;
+}
+
+.jodit-toolbar-button__trigger:hover {
+    background-color: inherit !important;
+    fill: #595d71 !important;
+    border: transparent !important;
+}
+
+.jodit-icon {
+    fill: #595d71 !important;
+}
+
+.jodit-toolbar-button__button:hover,
+.jodit-toolbar-button:hover {
+    background-color: inherit !important;
+    fill: #595d71 !important;
+    border: transparent !important;
+}
+
+.jodit-toolbar-button[aria-pressed="true"] {
+    background-color: #282d47 !important;
+    color: white !important;
+}
+
+.jodit-container {
+    border-radius: 10px !important;
+    border-color: #6d7081 !important;
+}
+
+.jodit-toolbar__box {
+    border: transparent !important;
+}
+
+.jodit-ui-group_separated_true:not(:last-child):not(.jodit-ui-group_before-spacer_true):after {
+    border-color: #6d7081 !important;
+}
+
+.jodit-toolbar-editor-collection_mode_horizontal:after {
+    height: 0px !important;
+}
+
+.jodit-status-bar {
+    height: 50px !important;
+    color: white !important;
+}
+
+.jodit-status-bar .jodit-status-bar__item > span {
+    font-size: 14px !important;
+}
+.jodit-status-bar .jodit-status-bar-link {
+    display: none;
+}
+
+.jodit-workplace + .jodit-status-bar:not(:empty) {
+    border-color: #6d7081 !important;
+}
+
+.jodit-workplace {
+    min-height: 220px !important;
+}
+.jodit-toolbar__box,
+.jodit-workplace,
+.jodit-status-bar,
+.jodit-container {
+    background-color: transparent !important;
+}
+
+.jodit-toolbar-button__trigger {
+    fill: white !important;
+}
+
+.jodit-toolbar-button__trigger:hover {
+    background-color: inherit !important;
+    fill: #595d71 !important;
+    border-color: transparent !important;
+}
+
+.jodit-icon {
+    fill: #595d71 !important;
+}
+
+.jodit-toolbar-button__button:hover,
+.jodit-toolbar-button:hover {
+    background-color: inherit !important;
+    fill: #595d71 !important;
+    border-color: transparent !important;
+    width: inherit !important;
+}
+
+.jodit-toolbar-button__button[aria-pressed="true"] {
+    background-color: #282d47 !important;
+    fill: white !important;
+}
+
+.jodit-container {
+    border-radius: 10px !important;
+    border-color: #6d7081 !important;
+}
+
+.jodit-toolbar__box {
+    border-color: transparent !important;
+}
+
+.jodit-ui-group_separated_true:not(:last-child):not(.jodit-ui-group_before-spacer_true):after {
+    border-color: #6d7081 !important;
+}
+
+.jodit-toolbar-editor-collection_mode_horizontal:after {
+    height: 0px !important;
+}
+
+.jodit-status-bar {
+    height: 50px !important;
+    color: white !important;
+}
+
+.jodit-status-bar .jodit-status-bar__item > span {
+    font-size: 14px !important;
+}
+.jodit-status-bar .jodit-status-bar-link {
+    display: none;
+}
+
+.jodit-workplace + .jodit-status-bar:not(:empty) {
+    border-color: #6d7081 !important;
+}
+
+.jodit-workplace {
+    min-height: 220px !important;
+}

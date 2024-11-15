@@ -2,6 +2,7 @@ import '../styles/globals.scss';
 
 import { Inter } from 'next/font/google';
 import React from 'react';
+import './index.css';
 
 import { AppProvider } from '@/components/App';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
