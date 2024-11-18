@@ -62,7 +62,7 @@ module.exports = {
   settings: {
     react: {
       pragma: 'React',
-      version: '18.2.0',
+      version: 'detect',
     },
   },
 };

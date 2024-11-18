@@ -1,9 +1,6 @@
-import axios from 'axios';
 import { Metadata } from 'next';
-import { GetServerSideProps } from 'next';
-import { notFound, redirect } from 'next/navigation';
 
-import AddSecurityQuestion from '@/Layout/SecurityQuestion/Add';
+import AddSecurityQuestion from '@/Layout/SecurityQuestion/Components/Add';
 
 export const metadata: Metadata = {
   title: 'Add Security Question',

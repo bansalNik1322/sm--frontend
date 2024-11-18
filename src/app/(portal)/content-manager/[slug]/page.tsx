@@ -1,8 +1,8 @@
-import { Metadata } from 'next';
-
-import EditContentManager from '@/Layout/ContentManager/Edit';
 import axios from 'axios';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+
+import EditContentManager from '@/Layout/ContentManager/Components/Edit';
 
 export const metadata: Metadata = {
   title: 'Edit Content Manager',

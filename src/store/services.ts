@@ -7,3 +7,4 @@ export * from '@/Layout/Container/Components/EditColumns/service';
 export * from '@/Layout/SecurityQuestion/service';
 export * from '@/Layout/FAQ/service';
 export * from '@/Layout/ContentManager/service';
+export * from '@/Layout/EmailTemplate/service';

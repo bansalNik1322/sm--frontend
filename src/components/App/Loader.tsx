@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Spinner from 'react-bootstrap/Spinner';
 import { Bars, ThreeDots } from 'react-loader-spinner';
 
-function ButtonLoader() {
+export function ButtonLoader() {
   return (
     <div className="d-flex justify-content-center">
       <ThreeDots

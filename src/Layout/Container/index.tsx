@@ -1,6 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
 import { validateAuthentication } from '@/utils/helpers';
@@ -28,12 +29,14 @@ const Container: React.FC<Props> = ({ children, header }) => {
     setHydrated(true);
   }, []);
 
+  const router = useRouter();
+
   // Do not render anything until hydration is complete
   if (!hydrated) return null;
 
   // Validate authentication before rendering layout
   if (!validateAuthentication()) {
-    return <div>You need to log in to access this page.</div>;
+    router.push('/login');
   }
 
   return (

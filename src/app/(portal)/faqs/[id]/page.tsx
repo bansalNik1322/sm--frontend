@@ -2,11 +2,11 @@ import axios from 'axios';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import EditFaq from '@/Layout/FAQ/Edit';
+import EditFaq from '@/Layout/FAQ/Components/Edit';
 
 export const metadata: Metadata = {
-  title: 'FAQ',
-  description: 'FAQ',
+  title: 'Edit FAQ',
+  description: 'Edit FAQ',
 };
 
 const getServerSideProps = async (id: string) => {

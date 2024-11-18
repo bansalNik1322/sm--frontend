@@ -1,12 +1,13 @@
 import '../styles/globals.scss';
+import './index.css';
 
 import { Inter } from 'next/font/google';
 import React from 'react';
-import './index.css';
 
 import { AppProvider } from '@/components/App';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { getSettingsDetail } from '@/Layout/Settings/service';
+import AppThemeProvider from '@/theme/ThemeProvider';
 import { KEYPAIR } from '@/types/interfaces';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -36,9 +37,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body className={inter.className} suppressHydrationWarning={true}>
-        <AppProvider settings={branding}>
-          <ErrorBoundary>{children}</ErrorBoundary>
-        </AppProvider>
+        <AppThemeProvider>
+          <AppProvider settings={branding}>
+            <ErrorBoundary>{children}</ErrorBoundary>
+          </AppProvider>
+        </AppThemeProvider>
       </body>
     </html>
   );

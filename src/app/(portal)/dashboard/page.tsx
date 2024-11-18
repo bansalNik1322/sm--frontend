@@ -1,13 +1,12 @@
 import { Metadata } from 'next';
 
+import Dashboard from '@/Layout/Dashboard';
+
 export const metadata: Metadata = {
-  title: 'Dashboard',
-  description: 'Admin Home Page',
-  keywords: 'Dashbaord',
+  title: 'Security Question',
+  description: 'Security Question',
 };
-
-import Dashbaord from '@/Layout/Dashboard';
-
-export default function Index() {
-  return <Dashbaord />;
+function Index() {
+  return <Dashboard />;
 }
+export default Index;

@@ -1,17 +1,13 @@
 import { Metadata } from 'next';
 
-import AddContentManager from '@/Layout/ContentManager/Add';
-import axios from 'axios';
-import { notFound } from 'next/navigation';
+import AddContentManager from '@/Layout/ContentManager/Components/Add';
 
 export const metadata: Metadata = {
-  title: 'Edit Content Manager',
-  description: 'Edit Content Manager',
+  title: 'Add Content Manager',
+  description: 'Add Content Manager',
 };
 
- 
 const Index = async () => {
-
   return <AddContentManager />;
 };
 export default Index;

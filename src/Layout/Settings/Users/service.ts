@@ -42,10 +42,9 @@ export async function removeUserFromList(action: ACTION): Promise<unknown> {
   }
 }
 
-export async function getUserDetailById(action: ACTION): Promise<unknown> {
+export async function getUserDetailById(): Promise<unknown> {
   try {
-    const { payload } = action;
-    const res: ReturnType<any> = await api(`/api/user/get-details/${payload?.id}`);
+    const res: ReturnType<any> = await api(`/api/account/`);
     return res;
   } catch (error) {
     return handleErrors(error as API_ERROR);

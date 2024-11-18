@@ -7,13 +7,10 @@ export async function LoginUser(action: ACTION): Promise<unknown> {
   try {
     const { payload } = action;
     const res: ReturnType<any> = await api('/api/auth/login', 'POST', { data: payload });
-    console.log(res);
-    if (res?.data?.accessToken) {
+    console.log('🚀 ~ LoginUser ~ res:', res);
+    if (res?.data?.authTokens) {
       toastr('Login Successful', 'success', 'Login');
-      setHeader(res.data.accessToken, 'accessToken');
-    }
-    if (res?.data?.sessionId) {
-      setHeader(res.data.sessionId?.toString(), 'sessionId');
+      setHeader(res.data.authTokens.accessToken, 'accessToken');
     }
     return res;
   } catch (error) {

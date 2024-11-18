@@ -1,28 +1,30 @@
 'use client';
-
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import AppleIcon from '@mui/icons-material/Apple';
+import GoogleIcon from '@mui/icons-material/Google';
+import {
+  Box,
+  Button,
+  Checkbox,
+  Divider,
+  FormControl,
+  FormControlLabel,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { Formik } from 'formik';
 import Cookies from 'js-cookie';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Col, Form, InputGroup, Row } from 'react-bootstrap';
 import * as Yup from 'yup';
 
 import { useLoading, useRequest } from '@/components/App';
 import { SuspenseLoader } from '@/components/App/Loader';
-import {
-  AuthContainer,
-  AuthPage,
-  Divider,
-  ForgotLink,
-  InputField,
-  NoAccount,
-  SocialMediaButton,
-  SocialMediaLogin,
-  SubmitButton,
-} from '@/styles/Auth/auth.style';
 import { KEYPAIR, REQUEST } from '@/types/interfaces';
-import { validateAuthentication } from '@/utils/helpers';
+import { toastr, validateAuthentication } from '@/utils/helpers';
 
 const initialValues = {
   email: '',
@@ -39,7 +41,7 @@ function Index() {
   const router = useRouter();
   const { request, loading } = useRequest();
   const { ButtonLoader } = useLoading();
-  const [viewPassword, setviewPassword] = useState(false);
+  const [viewPassword, setViewPassword] = useState(false);
 
   const validateToken = useCallback(() => {
     if (validateAuthentication()) {
@@ -53,60 +55,59 @@ function Index() {
 
   const handleSubmit = async (values: KEYPAIR) => {
     console.log(values);
-    const req = (await request('LoginUser', values)) as REQUEST;
-    console.log(req);
-    if (req?.data) {
-      if (values.rememberme) Cookies.set('rememberme', '1');
-      return router.push('/settings/accounts');
+    const { data, status, message } = (await request('LoginUser', { ...values, userid: values.email })) as {
+      data: any;
+      status: boolean;
+      message: string;
+    };
+    if (status) {
+      Cookies.set('accessToken', data?.authTokens?.accessToken);
+      Cookies.set('refresthToken', data?.authTokens?.refresthToken);
+      return router.push('/dashboard');
+    } else {
+      toastr('Login Failed', 'error', 'Login');
     }
   };
+
   if (validateAuthentication()) {
     if (Cookies.get('rememberme') === '1') return <SuspenseLoader />;
   }
 
   return (
-    <AuthPage>
-      <AuthContainer>
-        <h2>LogIn</h2>
+    <Box
+      sx={{
+        overflow: 'hidden',
+        minHeight: '100vh',
+        backgroundColor: '#070C27',
+        display: 'flex',
+        color: 'rgba(203, 204, 210, 0.7)',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <Box
+        sx={{
+          backgroundColor: '#111633',
+          width: '40%',
+          padding: '20px',
+          borderRadius: '10px',
+          textAlign: 'center',
+        }}
+      >
+        <Typography sx={{ marginBottom: '21px' }} variant="h3" gutterBottom>
+          LogIn
+        </Typography>
 
-        <SocialMediaLogin>
-          <SocialMediaButton>
-            <span className="MuiButton-icon MuiButton-startIcon MuiButton-iconSizeMedium css-1l6c7y9">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-                role="img"
-                className="MuiBox-root css-0 iconify iconify--logos"
-                width="0.98em"
-                height="1em"
-                viewBox="0 0 256 262"
-              >
-                <path
-                  fill="#4285F4"
-                  d="M255.878 133.451c0-10.734-.871-18.567-2.756-26.69H130.55v48.448h71.947c-1.45 12.04-9.283 30.172-26.69 42.356l-.244 1.622l38.755 30.023l2.685.268c24.659-22.774 38.875-56.282 38.875-96.027"
-                ></path>
-                <path
-                  fill="#34A853"
-                  d="M130.55 261.1c35.248 0 64.839-11.605 86.453-31.622l-41.196-31.913c-11.024 7.688-25.82 13.055-45.257 13.055c-34.523 0-63.824-22.773-74.269-54.25l-1.531.13l-40.298 31.187l-.527 1.465C35.393 231.798 79.49 261.1 130.55 261.1"
-                ></path>
-                <path
-                  fill="#FBBC05"
-                  d="M56.281 156.37c-2.756-8.123-4.351-16.827-4.351-25.82c0-8.994 1.595-17.697 4.206-25.82l-.073-1.73L15.26 71.312l-1.335.635C5.077 89.644 0 109.517 0 130.55s5.077 40.905 13.925 58.602z"
-                ></path>
-                <path
-                  fill="#EB4335"
-                  d="M130.55 50.479c24.514 0 41.05 10.589 50.479 19.438l36.844-35.974C195.245 12.91 165.798 0 130.55 0C79.49 0 35.393 29.301 13.925 71.947l42.211 32.783c10.59-31.477 39.891-54.251 74.414-54.251"
-                ></path>
-              </svg>
-            </span>
-            &nbsp;Login With Google
-          </SocialMediaButton>
-          <SocialMediaButton>
-            <i className="fab fa-apple"></i> &nbsp; Login With Apple
-          </SocialMediaButton>
-        </SocialMediaLogin>
+        <Box sx={{ display: 'flex', gap: '20px', justifyContent: 'space-between', marginBottom: '40px' }}>
+          <Button fullWidth startIcon={<GoogleIcon />} variant="contained">
+            Login With Google
+          </Button>
+          <Button fullWidth startIcon={<AppleIcon />} variant="contained">
+            Login With Apple
+          </Button>
+        </Box>
 
-        <Divider>
+        <Divider sx={{ color: '#aeb9cb', margin: '40px 0' }}>
           <span>or Login with</span>
         </Divider>
 
@@ -118,58 +119,79 @@ function Index() {
           onSubmit={handleSubmit}
         >
           {({ handleSubmit, handleChange, errors, touched, values }) => (
-            <Form noValidate onSubmit={handleSubmit}>
-              <Row>
-                <Col md={12}>
-                  <Form.Group className="mb-3">
-                    <InputField
-                      type="email"
-                      name="email"
-                      placeholder="Your email or username"
-                      onChange={handleChange}
-                      isInvalid={!!errors.email}
-                      value={values.email}
-                    />
-                    {errors.email && touched.email ? (
-                      <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
-                    ) : null}
-                  </Form.Group>
-                </Col>
-                <Col md={12}>
-                  <Form.Group className="mb-3">
-                    <InputGroup className="mb-3">
-                      <InputField
-                        type={viewPassword ? 'text' : 'password'}
-                        name="password"
-                        placeholder="Enter password"
-                        onChange={handleChange}
-                        isInvalid={!!errors.password}
-                      />
-                    </InputGroup>
-                  </Form.Group>
-                </Col>
-                <div className="d-flex justify-content-between">
-                  <div>
-                    <Form.Group className="rememberMe">
-                      <Form.Check type="checkbox" name="rememberme" label="Remember me" onChange={handleChange} />
-                    </Form.Group>
-                  </div>
-                  <ForgotLink>
-                    <Link href="/forgot-password">Forgot password</Link>
-                  </ForgotLink>
-                </div>
+            <form noValidate onSubmit={handleSubmit}>
+              <Box sx={{ marginBottom: '16px' }}>
+                <FormControl fullWidth>
+                  <TextField
+                    label="Email or Username"
+                    variant="outlined"
+                    name="email"
+                    type="email"
+                    onChange={handleChange}
+                    value={values.email}
+                    error={!!errors.email && touched.email}
+                    helperText={errors.email && touched.email && errors.email}
+                    fullWidth
+                  />
+                </FormControl>
+              </Box>
 
-                <SubmitButton type="submit">{loading?.LoginUser_LOADING ? ButtonLoader() : 'Submit'}</SubmitButton>
-              </Row>
-            </Form>
+              <Box sx={{ marginBottom: '16px' }}>
+                <FormControl fullWidth>
+                  <TextField
+                    label="Password"
+                    variant="outlined"
+                    name="password"
+                    type={viewPassword ? 'text' : 'password'}
+                    onChange={handleChange}
+                    error={!!errors.password && touched.password}
+                    helperText={errors.password && touched.password && errors.password}
+                    fullWidth
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={() => setViewPassword(!viewPassword)} edge="end">
+                            {viewPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </FormControl>
+              </Box>
+
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  marginBottom: '20px',
+                  color: 'rgba(203, 204, 210, 0.7)',
+                }}
+              >
+                <FormControlLabel
+                  control={<Checkbox name="rememberme" checked={values.rememberme} onChange={handleChange} />}
+                  label="Remember me"
+                />
+                <Link href="/forgot-password" style={{ color: '#bf2fcc' }}>
+                  Forgot password
+                </Link>
+              </Box>
+
+              <Button variant="contained" sx={{ marginBottom: '30px' }} type="submit" fullWidth>
+                {loading?.LoginUser_LOADING ? ButtonLoader() : 'Submit'}
+              </Button>
+            </form>
           )}
         </Formik>
 
-        <NoAccount>
-          Don't have an Account? <Link href="/register">Signup</Link>
-        </NoAccount>
-      </AuthContainer>
-    </AuthPage>
+        <Typography variant="body2" color="textSecondary">
+          Don't have an Account?{' '}
+          <Link href="/register" style={{ color: '#bf2fcc' }}>
+            Signup
+          </Link>
+        </Typography>
+      </Box>
+    </Box>
   );
 }
 

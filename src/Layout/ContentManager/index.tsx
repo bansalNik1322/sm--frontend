@@ -1,25 +1,21 @@
-/* eslint-disable import/order */
 'use client';
-import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import { Button, Container, Grid, IconButton, Tooltip, Typography, useTheme } from '@mui/material';
+import { Container, Grid, IconButton, Tooltip, Typography, useTheme } from '@mui/material';
 import moment from 'moment';
-import Head from 'next/head';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
 import { useRequest } from '@/components/App';
 import { showConfirmDialog } from '@/components/Default/ConfirmDialoge';
 import Label from '@/components/Default/Label';
-import PageHeader from '@/components/Default/PageHeader';
-import PageTitleWrapper from '@/components/Default/PageTitleWrapper';
+import Table from '@/Layout/SecurityQuestion/Table';
 import { DATATABLE_COLUMN } from '@/types/interfaces';
 import { toastr } from '@/utils/helpers';
 
 import Footer from '../Container/Components/Footer';
 import { useContainerContext } from '../Container/context';
-import Table from '@/Layout/SecurityQuestion/Table';
+import PageHeader from './Components/header';
 
 const columns: DATATABLE_COLUMN[] = [
   {
@@ -75,7 +71,7 @@ function Index() {
       };
       if (status) {
         toastr('CMS status has been updated Successfully', 'success');
-      }else{
+      } else {
         toastr(message, 'error');
       }
     }
@@ -89,7 +85,7 @@ function Index() {
         status: boolean;
         message: string;
       };
- 
+
       if (status) {
         toastr('CMS has been deleted Successfully', 'success');
       } else {
@@ -196,26 +192,7 @@ function Index() {
 
   return (
     <>
-      <Head>
-        <title>Security Questions - Applications</title>
-      </Head>
-      <PageTitleWrapper>
-        <PageHeader
-          heading="Content Management"
-          content={<Typography variant="subtitle2">Manage your content and resources easily</Typography>}
-          action={
-            <Button
-              href="/security-questions/add"
-              sx={{ mt: { xs: 2, md: 0 } }}
-              variant="contained"
-              startIcon={<AddTwoToneIcon fontSize="small" />}
-            >
-              Add New Page
-            </Button>
-          }
-        />
-      </PageTitleWrapper>
-
+      <PageHeader />
       <Container maxWidth="lg">
         <Grid container direction="row" justifyContent="center" alignItems="stretch" spacing={3}>
           <Grid item xs={12}>

@@ -66,7 +66,7 @@ function Sidebar() {
             background: theme.colors.alpha.trueWhite[50],
           }}
         />
-        <Box p={2}>
+        {/* <Box p={2}>
           <Button
             href="https://bloomui.com"
             target="_blank"
@@ -77,7 +77,7 @@ function Sidebar() {
           >
             Settings
           </Button>
-        </Box>
+        </Box> */}
       </SidebarWrapper>
       <Drawer
         sx={{

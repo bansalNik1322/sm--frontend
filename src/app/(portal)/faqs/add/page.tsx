@@ -1,12 +1,13 @@
 import { Metadata } from 'next';
-import AddFaq from '@/Layout/FAQ/Add';
+
+import AddFaq from '@/Layout/FAQ/Components/Add';
 
 export const metadata: Metadata = {
-  title: 'FAQ',
-  description: 'FAQ',
+  title: 'Add FAQ',
+  description: 'Add FAQ',
 };
 
-async function Index({ params }: { params: { id: string } }) {
+async function Index() {
   return <AddFaq />;
 }
 

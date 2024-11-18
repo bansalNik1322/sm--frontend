@@ -352,13 +352,11 @@ export const validateAuthentication = () => {
 
     if (decoded.exp < currentTime) {
       logout();
-      // return false;
       return true;
     }
     return true;
   } else {
-    return true;
-    // return false;
+    return false;
   }
 };
 

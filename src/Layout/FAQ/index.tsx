@@ -1,12 +1,10 @@
+/* eslint-disable import/order */
 /* eslint-disable @typescript-eslint/ban-types */
 'use client';
 
 import { BorderColorOutlined, DeleteOutlineOutlined } from '@mui/icons-material';
-import { useRouter } from 'next/navigation';
-import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
 import {
   Box,
-  Button,
   Card,
   CardContent,
   CardHeader,
@@ -21,23 +19,22 @@ import {
 } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import moment from 'moment';
-import Head from 'next/head';
+import { useRouter } from 'next/navigation';
 import { ChangeEvent, useMemo, useState } from 'react';
 
 import { useRequest } from '@/components/App';
 import AccordionList from '@/components/Default/AccordionList';
 import { showConfirmDialog } from '@/components/Default/ConfirmDialoge';
-import PageHeader from '@/components/Default/PageHeader';
-import PageTitleWrapper from '@/components/Default/PageTitleWrapper';
 import { toastr } from '@/utils/helpers';
 
 import { useContainerContext } from '../Container/context';
+import PageHeader from './Components/header';
 const TabsWrapper = styled(Tabs)(
   () => `
-      .MuiTabs-scrollableX {
-        overflow-x: auto !important;
-      }
-  `,
+        .MuiTabs-scrollableX {
+          overflow-x: auto !important;
+        }
+    `,
 );
 
 const tabs = [
@@ -138,25 +135,7 @@ const Index = () => {
 
   return (
     <>
-      <Head>
-        <title>FAQ Management</title>
-      </Head>
-      <PageTitleWrapper>
-        <PageHeader
-          heading="FAQ Management"
-          content={<Typography variant="subtitle2">Manage frequently asked questions</Typography>}
-          action={
-            <Button
-              href="/faqs/add"
-              sx={{ mt: { xs: 2, md: 0 } }}
-              variant="contained"
-              startIcon={<AddTwoToneIcon fontSize="small" />}
-            >
-              Add FAQ
-            </Button>
-          }
-        />
-      </PageTitleWrapper>
+      <PageHeader />
       <Container maxWidth="lg">
         <Grid container direction="row" justifyContent="center" alignItems="stretch" spacing={3}>
           <Grid item xs={12}>
