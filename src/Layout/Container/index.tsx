@@ -37,6 +37,7 @@ const Container: React.FC<Props> = ({ children, header }) => {
   // Validate authentication before rendering layout
   if (!validateAuthentication()) {
     router.push('/login');
+    return;
   }
 
   return (

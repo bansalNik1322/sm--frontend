@@ -14,6 +14,9 @@ const rewrites = () => {
 };
 
 const nextConfig = {
+  experimental: {
+    serverActions: true,
+  },
   rewrites,
   images: {
     remotePatterns: [

@@ -62,7 +62,7 @@ function Index() {
     };
     if (status) {
       Cookies.set('accessToken', data?.authTokens?.accessToken);
-      Cookies.set('refresthToken', data?.authTokens?.refresthToken);
+      Cookies.set('refreshToken', data?.authTokens?.refreshToken);
       return router.push('/dashboard');
     } else {
       toastr('Login Failed', 'error', 'Login');
