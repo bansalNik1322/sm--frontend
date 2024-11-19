@@ -31,7 +31,8 @@ const HeaderWrapper = styled(Box)(({ theme }) => ({
 }));
 
 function Header() {
-  const { sidebarToggle, toggleSidebar } = useContainerContext();
+  const { sidebarToggle, toggleSidebar, largeScreen } = useContainerContext();
+  console.log('🚀 ~ Header ~ largeScreen:', largeScreen);
   const theme = useTheme();
 
   return (
@@ -39,6 +40,8 @@ function Header() {
       display="flex"
       alignItems="center"
       sx={{
+        width: !sidebarToggle ? `calc(100% - ${theme.sidebar.width})` : '100%',
+        left: !sidebarToggle ? theme.sidebar.width : 0,
         boxShadow:
           theme.palette.mode === 'dark'
             ? `0 1px 0 ${alpha(
@@ -57,18 +60,25 @@ function Header() {
       <Box display="flex" alignItems="center">
         <HeaderButtons />
         <HeaderUserbox />
+
         <Box
           component="span"
           sx={{
             ml: 2,
-            display: { lg: 'none', xs: 'inline-block' },
+            display: 'inline-block',
           }}
         >
-          <Tooltip arrow title="Toggle Menu">
+          {!largeScreen ? (
+            <Tooltip arrow title="Toggle Menu">
+              <IconButton color="primary" onClick={toggleSidebar}>
+                {sidebarToggle ? <MenuTwoToneIcon fontSize="small" /> : <CloseTwoToneIcon fontSize="small" />}
+              </IconButton>
+            </Tooltip>
+          ) : (
             <IconButton color="primary" onClick={toggleSidebar}>
-              {!sidebarToggle ? <MenuTwoToneIcon fontSize="small" /> : <CloseTwoToneIcon fontSize="small" />}
+              {sidebarToggle && <MenuTwoToneIcon fontSize="small" />}
             </IconButton>
-          </Tooltip>
+          )}
         </Box>
       </Box>
     </HeaderWrapper>

@@ -55,17 +55,23 @@ function Index() {
 
   const handleSubmit = async (values: KEYPAIR) => {
     console.log(values);
-    const { data, status, message } = (await request('LoginUser', { ...values, userid: values.email })) as {
-      data: any;
-      status: boolean;
-      message: string;
-    };
-    if (status) {
-      Cookies.set('accessToken', data?.authTokens?.accessToken);
-      Cookies.set('refreshToken', data?.authTokens?.refreshToken);
-      return router.push('/dashboard');
-    } else {
-      toastr('Login Failed', 'error', 'Login');
+    try {
+      const { data, status, message } = (await request('LoginUser', { ...values, userid: values.email })) as {
+        data: any;
+        status: boolean;
+        message: string;
+      };
+      console.log('🚀 ~ handleSubmit ~ status:', status);
+      if (status) {
+        Cookies.set('accessToken', data?.authTokens?.accessToken);
+        Cookies.set('refreshToken', data?.authTokens?.refreshToken);
+        return router.push('/dashboard');
+      } else {
+        toastr('Login Failed', 'error', 'Login');
+      }
+    } catch (error) {
+      console.log('🚀 ~ handleSubmit ~ error:', error);
+      throw error;
     }
   };
 

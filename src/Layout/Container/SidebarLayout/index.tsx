@@ -5,12 +5,15 @@ import { FC, ReactNode } from 'react';
 import Header from '@/Layout/Container/Components/Header';
 import Sidebar from '@/Layout/Container/Components/Sidebar';
 
+import { useContainerContext } from '../context';
+
 interface SidebarLayoutProps {
   children?: ReactNode;
 }
 
 const SidebarLayout: FC<SidebarLayoutProps> = ({ children }) => {
   const theme = useTheme();
+  const { sidebarToggle } = useContainerContext();
 
   return (
     <>
@@ -45,7 +48,7 @@ const SidebarLayout: FC<SidebarLayoutProps> = ({ children }) => {
             flex: 1,
             pt: `${theme.header.height}`,
             [theme.breakpoints.up('lg')]: {
-              ml: `${theme.sidebar.width}`,
+              ml: !sidebarToggle ? `${theme.sidebar.width}` : 0,
             },
           }}
         >

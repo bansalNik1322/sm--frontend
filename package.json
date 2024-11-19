@@ -21,8 +21,7 @@
   },
   "dependencies": {
     "@ai-sdk/google": "^0.0.55",
-    "@ckeditor/ckeditor5-build-classic": "^43.3.1",
-    "@ckeditor/ckeditor5-react": "^9.3.1",
+    "@ai-sdk/google-vertex": "^1.0.0",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@google/generative-ai": "^0.21.0",
@@ -31,8 +30,6 @@
     "@mui/lab": "5.0.0-alpha.84",
     "@mui/material": "5.8.2",
     "@mui/styles": "5.8.0",
-    "@syncfusion/ej2": "^19.4.48",
-    "@syncfusion/ej2-react-calendars": "^19.4.48",
     "@types/node": "20.4.5",
     "@typescript-eslint/eslint-plugin": "5.49",
     "ai": "^3.4.33",

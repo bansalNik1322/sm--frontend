@@ -78,6 +78,13 @@ function HeaderMenu() {
         }}
       >
         <List disablePadding component={Box} display="flex">
+          <Box
+            component="span"
+            sx={{
+              ml: 2,
+              display: 'inline-block',
+            }}
+          ></Box>
           <ListItem classes={{ root: 'MuiListItem-indicators' }} button component={Link} href="/components/buttons">
             <ListItemText primaryTypographyProps={{ noWrap: true }} primary="Buttons" />
           </ListItem>

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 'use client';
 
+import { useMediaQuery, useTheme } from '@mui/material';
 import { usePathname, useRouter } from 'next/navigation';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
@@ -55,6 +56,7 @@ interface CONTEXTVALUE {
   sidebarToggle: boolean;
   toggleSidebar: () => void;
   closeSidebar: () => void;
+  largeScreen: boolean;
 }
 
 const AppContext = createContext<CONTEXTVALUE | null>(null);
@@ -70,6 +72,9 @@ export const ContainerContextProvider = ({ children }: Props) => {
     profileDetail: {},
     show: false,
   });
+  const theme = useTheme();
+  const largeScreen = useMediaQuery(theme.breakpoints.up('md'));
+  console.log('🚀 ~ ContainerContextProvider ~ largeScreen:', largeScreen, asPath);
   const { request } = useRequest();
   const [screenSize, setScreenSize] = useState<number | undefined>(undefined);
   const [currentColor, setCurrentColor] = useState<string>('#03C9D7');
@@ -77,7 +82,7 @@ export const ContainerContextProvider = ({ children }: Props) => {
   const [themeSettings, setThemeSettings] = useState<boolean>(false);
   const [activeMenu, setActiveMenu] = useState<boolean>(true);
   const [isClicked, setIsClicked] = useState(initialState);
-  const [sidebarToggle, setSidebarToggle] = useState(false);
+  const [sidebarToggle, setSidebarToggle] = useState(!largeScreen || asPath.startsWith('/chat') ? true : false);
 
   const toggleSidebar = () => setSidebarToggle(!sidebarToggle);
   const closeSidebar = () => setSidebarToggle(false);
@@ -114,6 +119,7 @@ export const ContainerContextProvider = ({ children }: Props) => {
     sidebarToggle,
     toggleSidebar,
     closeSidebar,
+    largeScreen,
   };
 
   function logout() {
