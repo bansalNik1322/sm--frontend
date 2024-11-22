@@ -65,6 +65,8 @@ function Index() {
       if (status) {
         Cookies.set('accessToken', data?.authTokens?.accessToken);
         Cookies.set('refreshToken', data?.authTokens?.refreshToken);
+        const previousRoute = router.back();
+        console.log('🚀 ~ handleSubmit ~ previousRoute:', previousRoute);
         return router.push('/dashboard');
       } else {
         toastr('Login Failed', 'error', 'Login');

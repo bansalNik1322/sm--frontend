@@ -21,7 +21,6 @@ const SidebarWrapper = styled(Box)(
 
 function Sidebar() {
   const { sidebarToggle, toggleSidebar, largeScreen } = useContainerContext();
-  console.log('🚀 ~ Sidebar ~ sidebarToggle:', sidebarToggle);
   const closeSidebar = () => toggleSidebar();
   const theme = useTheme();
 

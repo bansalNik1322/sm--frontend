@@ -32,7 +32,6 @@ const HeaderWrapper = styled(Box)(({ theme }) => ({
 
 function Header() {
   const { sidebarToggle, toggleSidebar, largeScreen } = useContainerContext();
-  console.log('🚀 ~ Header ~ largeScreen:', largeScreen);
   const theme = useTheme();
 
   return (

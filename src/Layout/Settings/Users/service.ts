@@ -42,7 +42,7 @@ export async function removeUserFromList(action: ACTION): Promise<unknown> {
   }
 }
 
-export async function getUserDetailById(): Promise<unknown> {
+export async function getUserProfile(): Promise<unknown> {
   try {
     const res: ReturnType<any> = await api(`/api/account/`);
     return res;

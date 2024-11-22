@@ -7,6 +7,7 @@ import React from 'react';
 import { AppProvider } from '@/components/App';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { getSettingsDetail } from '@/Layout/Settings/service';
+import { SocketProvider } from '@/providers/SocketProvider';
 import AppThemeProvider from '@/theme/ThemeProvider';
 import { KEYPAIR } from '@/types/interfaces';
 
@@ -38,9 +39,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className={inter.className} suppressHydrationWarning={true}>
         <AppThemeProvider>
-          <AppProvider settings={branding}>
-            <ErrorBoundary>{children}</ErrorBoundary>
-          </AppProvider>
+          <SocketProvider>
+            <AppProvider settings={branding}>
+              <ErrorBoundary>{children}</ErrorBoundary>
+            </AppProvider>
+          </SocketProvider>
         </AppThemeProvider>
       </body>
     </html>

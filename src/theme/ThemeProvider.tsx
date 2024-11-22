@@ -1,16 +1,15 @@
 'use client';
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-/* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable react/prop-types */
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { StylesProvider } from '@mui/styles';
-import { createContext, FC, ReactNode, useEffect, useState } from 'react';
+import { createContext, ReactNode, useEffect, useState } from 'react';
 
 import { themeCreator } from './base';
 
-export const ThemeContext = createContext((_themeName: string): void => {});
+export const ThemeContext = createContext((_themeName: string): void => {
+  console.log();
+});
 
 interface ThemeProviderWrapperProps {
   children: ReactNode;

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 'use client';
 
 import { useMediaQuery, useTheme } from '@mui/material';
@@ -20,7 +19,9 @@ type SidebarContextType = {
 export const SidebarContext = createContext<SidebarContextType>({
   sidebarToggle: false,
 
-  toggleSidebar: () => {},
+  toggleSidebar: () => {
+    undefined;
+  },
   closeSidebar: () => {
     false;
   },
@@ -74,7 +75,6 @@ export const ContainerContextProvider = ({ children }: Props) => {
   });
   const theme = useTheme();
   const largeScreen = useMediaQuery(theme.breakpoints.up('md'));
-  console.log('🚀 ~ ContainerContextProvider ~ largeScreen:', largeScreen, asPath);
   const { request } = useRequest();
   const [screenSize, setScreenSize] = useState<number | undefined>(undefined);
   const [currentColor, setCurrentColor] = useState<string>('#03C9D7');
@@ -130,15 +130,15 @@ export const ContainerContextProvider = ({ children }: Props) => {
   async function fetchProfileDetails() {
     const { decoded, isValid } = getDecodedToken('');
     if (!isValid) return;
-    const detail = (await request('getUserDetailById', { id: decoded.userId })) as REQUEST;
+    const detail = (await request('getUserProfile', { id: decoded.userId })) as REQUEST;
     if (detail) {
-      dispatch({ profileDetail: detail });
+      dispatch({ profileDetail: detail?.data });
     }
   }
 
   useEffect(() => {
     if (!validateAuthentication()) {
-      // logout();
+      logout();
     }
     fetchProfileDetails();
   }, [asPath]);

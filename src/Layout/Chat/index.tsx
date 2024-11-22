@@ -2,9 +2,13 @@
 import MenuTwoToneIcon from '@mui/icons-material/MenuTwoTone';
 import { Box, Divider, Drawer, IconButton, styled, useTheme } from '@mui/material';
 import Head from 'next/head';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 
+import { useRequest } from '@/components/App';
+import { SuspenseLoader } from '@/components/App/Loader';
 import Scrollbar from '@/components/Default/Scrollbar';
+import { useChat } from '@/providers/ChatProvider';
+import { useSocket } from '@/providers/SocketProvider';
 
 import BottomBarContent from './Components/BottomBarContent';
 import ChatContent from './Components/ChatContent';
@@ -68,17 +72,41 @@ const DrawerWrapperMobile = styled(Drawer)(
 const Index: FC = () => {
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [isSidebarVisible, setSidebarVisible] = useState(true); // Sidebar visibility state
+  const [isSidebarVisible, setSidebarVisible] = useState(true);
+  const { request, loading } = useRequest();
+  const { chat } = useChat();
+  const socket = useSocket();
+  console.log('🚀 ~ socket:', socket);
+  console.log('🚀 ~ chat:', chat);
+
+  const [chatList, setChatList] = useState([]);
+
+  const getUserChatList = async () => {
+    const { result } = (await request('getUserChatList')) as { result: any };
+
+    console.log('🚀 ~ getUserChatList ~ data:', result);
+    setChatList(result);
+  };
+
+  useEffect(() => {
+    getUserChatList();
+  }, []);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
   const toggleSidebar = () => {
-    setSidebarVisible(!isSidebarVisible); // Toggle sidebar visibility
+    setSidebarVisible(!isSidebarVisible);
   };
 
-  return (
+  const isLoading = useMemo(() => {
+    return loading?.getUserChatList_LOADING;
+  }, [loading]);
+
+  return isLoading ? (
+    <SuspenseLoader />
+  ) : (
     <>
       <Head>
         <title>Messenger - Applications</title>
@@ -94,7 +122,7 @@ const Index: FC = () => {
           onClose={handleDrawerToggle}
         >
           <Scrollbar>
-            <SidebarContent toggleSidebar={toggleSidebar} />
+            <SidebarContent chats={chatList} toggleSidebar={toggleSidebar} />
           </Scrollbar>
         </DrawerWrapperMobile>
 
@@ -105,7 +133,7 @@ const Index: FC = () => {
             }}
           >
             <Scrollbar>
-              <SidebarContent toggleSidebar={toggleSidebar} />
+              <SidebarContent chats={chatList} toggleSidebar={toggleSidebar} />
             </Scrollbar>
           </Sidebar>
         )}

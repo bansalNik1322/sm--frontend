@@ -8,3 +8,4 @@ export * from '@/Layout/SecurityQuestion/service';
 export * from '@/Layout/FAQ/service';
 export * from '@/Layout/ContentManager/service';
 export * from '@/Layout/EmailTemplate/service';
+export * from '@/Layout/Chat/service';

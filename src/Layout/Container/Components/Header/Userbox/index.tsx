@@ -20,6 +20,8 @@ import { styled } from '@mui/material/styles';
 import NextLink from 'next/link';
 import { useRef, useState } from 'react';
 
+import { useContainerContext } from '@/Layout/Container/context';
+
 const UserBoxButton = styled(Button)(
   ({ theme }) => `
         padding-left: ${theme.spacing(1)};
@@ -56,10 +58,13 @@ const UserBoxDescription = styled(Typography)(
 );
 
 function HeaderUserbox() {
+  const {
+    state: { profileDetail },
+  } = useContainerContext();
+
   const user = {
-    name: 'Catherine Pike',
-    avatar: '/static/images/avatars/1.jpg',
-    jobtitle: 'Project Manager',
+    name: profileDetail?.name,
+    avatar: profileDetail?.profile_image ?? '',
   };
 
   const ref = useRef<any>(null);
@@ -80,7 +85,7 @@ function HeaderUserbox() {
         <Hidden mdDown>
           <UserBoxText>
             <UserBoxLabel variant="body1">{user.name}</UserBoxLabel>
-            <UserBoxDescription variant="body2">{user.jobtitle}</UserBoxDescription>
+            <UserBoxDescription variant="body2">Super Admin</UserBoxDescription>
           </UserBoxText>
         </Hidden>
         <Hidden smDown>
@@ -104,7 +109,7 @@ function HeaderUserbox() {
           <Avatar variant="rounded" alt={user.name} src={user.avatar} />
           <UserBoxText>
             <UserBoxLabel variant="body1">{user.name}</UserBoxLabel>
-            <UserBoxDescription variant="body2">{user.jobtitle}</UserBoxDescription>
+            <UserBoxDescription variant="body2">Super Admin</UserBoxDescription>
           </UserBoxText>
         </MenuUserBox>
         <Divider sx={{ mb: 0 }} />
